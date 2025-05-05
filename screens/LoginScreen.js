@@ -1,26 +1,26 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native';
-import { useAuth } from '../context/AuthContext'; // Importa el contexto de autenticación
+import { useAuth } from '../context/AuthContext';
 
-export default function LoginScreen() {
-  const { login } = useAuth(); // Obtén la función para iniciar sesión
+export default function LoginScreen({ navigation }) {
+  const { login } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
   const handleLogin = () => {
     if (!email || !password) {
-      Alert.alert('Error', 'Por favor, completa todos los campos.');
+      Alert.alert('Error', 'Todos los campos son obligatorios.');
       return;
     }
 
-    // Aquí puedes agregar lógica para validar las credenciales (por ejemplo, con una API)
-    Alert.alert('Inicio de sesión exitoso', `Bienvenido de nuevo, ${email}!`);
-    login(); // Cambia el estado a autenticado
+    // Simular inicio de sesión exitoso
+    login();
+    Alert.alert('Inicio de sesión exitoso', 'Bienvenido de nuevo!');
   };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Iniciar Sesión</Text>
+      <Text style={styles.title}>Inicia Sesión</Text>
       <TextInput
         style={styles.input}
         placeholder="Correo electrónico"
@@ -36,7 +36,7 @@ export default function LoginScreen() {
         secureTextEntry
       />
       <TouchableOpacity style={styles.button} onPress={handleLogin}>
-        <Text style={styles.buttonText}>Ingresar</Text>
+        <Text style={styles.buttonText}>Iniciar Sesión</Text>
       </TouchableOpacity>
       <TouchableOpacity onPress={() => navigation.navigate('Register')}>
         <Text style={styles.link}>¿No tienes una cuenta? Regístrate</Text>

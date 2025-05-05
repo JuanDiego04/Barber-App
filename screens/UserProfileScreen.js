@@ -1,12 +1,36 @@
-import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Image, Alert } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, Image, Alert, Modal, TextInput } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { Ionicons } from '@expo/vector-icons'; // Importa el ícono
-import { useAuth } from '../context/AuthContext'; // Importa el contexto de autenticación
+import { Ionicons } from '@expo/vector-icons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useAuth } from '../context/AuthContext';
 
 export default function UserProfileScreen() {
   const navigation = useNavigation();
-  const { logout } = useAuth(); // Obtén la función para cerrar sesión
+  const { logout } = useAuth();
+  const [user, setUser] = useState(null);
+  const [isEditing, setIsEditing] = useState(false); // Estado para controlar el modal de edición
+  const [newName, setNewName] = useState('');
+  const [newEmail, setNewEmail] = useState('');
+
+  // Cargar datos del usuario desde AsyncStorage
+  useEffect(() => {
+    const cargarUsuario = async () => {
+      try {
+        const userData = await AsyncStorage.getItem('user');
+        if (userData) {
+          const parsedUser = JSON.parse(userData);
+          setUser(parsedUser);
+          setNewName(parsedUser.nombre); // Prellenar el formulario con los datos actuales
+          setNewEmail(parsedUser.email);
+        }
+      } catch (error) {
+        console.error('Error al cargar los datos del usuario:', error);
+      }
+    };
+
+    cargarUsuario();
+  }, []);
 
   const handleLogout = () => {
     Alert.alert(
@@ -17,13 +41,32 @@ export default function UserProfileScreen() {
         {
           text: 'Cerrar Sesión',
           style: 'destructive',
-          onPress: () => {
-            logout(); // Llama a la función de cierre de sesión
-            navigation.navigate('Login'); // Navega a la pantalla de inicio de sesión
+          onPress: async () => {
+            await AsyncStorage.removeItem('user');
+            logout();
+            navigation.navigate('Login');
           },
         },
       ]
     );
+  };
+
+  const handleSave = async () => {
+    if (!newName || !newEmail) {
+      Alert.alert('Error', 'Todos los campos son obligatorios.');
+      return;
+    }
+
+    try {
+      const updatedUser = { nombre: newName, email: newEmail };
+      await AsyncStorage.setItem('user', JSON.stringify(updatedUser)); // Actualizar en AsyncStorage
+      setUser(updatedUser); // Actualizar el estado local
+      setIsEditing(false); // Cerrar el modal
+      Alert.alert('Perfil actualizado', 'Tus datos han sido actualizados correctamente.');
+    } catch (error) {
+      console.error('Error al actualizar el perfil:', error);
+      Alert.alert('Error', 'No se pudo actualizar el perfil.');
+    }
   };
 
   return (
@@ -36,19 +79,25 @@ export default function UserProfileScreen() {
         <Text style={styles.headerText}>Perfil de Usuario</Text>
       </View>
 
-      {/* Imagen de perfil */}
+      {/* Imagen de perfil y datos del usuario */}
       <View style={styles.profileContainer}>
         <Image
-          source={require('../assets/avatar.png')} // Cambia la ruta a tu imagen de perfil
+          source={require('../assets/avatar.png')}
           style={styles.profileImage}
         />
-        <Text style={styles.nameText}>Juan Pérez</Text>
-        <Text style={styles.emailText}>juan.perez@example.com</Text>
+        {user ? (
+          <>
+            <Text style={styles.nameText}>{user.nombre}</Text>
+            <Text style={styles.emailText}>{user.email}</Text>
+          </>
+        ) : (
+          <Text style={styles.loadingText}>Cargando datos del usuario...</Text>
+        )}
       </View>
 
       {/* Opciones de perfil */}
       <View style={styles.optionsContainer}>
-        <TouchableOpacity style={styles.optionButton} onPress={() => Alert.alert('Editar perfil')}>
+        <TouchableOpacity style={styles.optionButton} onPress={() => setIsEditing(true)}>
           <Text style={styles.optionButtonText}>Editar Perfil</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.optionButton} onPress={() => Alert.alert('Cambiar contraseña')}>
@@ -58,6 +107,36 @@ export default function UserProfileScreen() {
           <Text style={styles.logoutButtonText}>Cerrar Sesión</Text>
         </TouchableOpacity>
       </View>
+
+      {/* Modal para editar el perfil */}
+      <Modal visible={isEditing} animationType="slide" transparent={true}>
+        <View style={styles.modalContainer}>
+          <View style={styles.modalContent}>
+            <Text style={styles.modalTitle}>Editar Perfil</Text>
+            <TextInput
+              style={styles.input}
+              placeholder="Nombre completo"
+              value={newName}
+              onChangeText={setNewName}
+            />
+            <TextInput
+              style={styles.input}
+              placeholder="Correo electrónico"
+              value={newEmail}
+              onChangeText={setNewEmail}
+              keyboardType="email-address"
+            />
+            <View style={styles.modalButtons}>
+              <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
+                <Text style={styles.saveButtonText}>Guardar</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.cancelButton} onPress={() => setIsEditing(false)}>
+                <Text style={styles.cancelButtonText}>Cancelar</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 }
@@ -77,11 +156,13 @@ const styles = StyleSheet.create({
   },
   backButton: {
     marginRight: 10,
+    marginTop: 22,
   },
   headerText: {
     fontSize: 24,
     fontWeight: 'bold',
     color: '#DAA520',
+    marginTop: 20,
   },
   profileContainer: {
     alignItems: 'center',
@@ -108,6 +189,10 @@ const styles = StyleSheet.create({
     marginBottom: 5,
   },
   emailText: {
+    fontSize: 16,
+    color: '#555',
+  },
+  loadingText: {
     fontSize: 16,
     color: '#555',
   },
@@ -147,5 +232,62 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
     textAlign: 'center',
+  },
+  modalContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  modalContent: {
+    width: '90%',
+    backgroundColor: '#fff',
+    borderRadius: 10,
+    padding: 20,
+    alignItems: 'center',
+  },
+  modalTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginBottom: 20,
+  },
+  input: {
+    width: '100%',
+    padding: 15,
+    marginBottom: 10,
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 5,
+    backgroundColor: '#fff',
+  },
+  modalButtons: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: '100%',
+  },
+  saveButton: {
+    backgroundColor: '#0077b6',
+    padding: 15,
+    borderRadius: 5,
+    flex: 1,
+    marginRight: 10,
+    alignItems: 'center',
+  },
+  saveButtonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  cancelButton: {
+    backgroundColor: '#dc3545',
+    padding: 15,
+    borderRadius: 5,
+    flex: 1,
+    alignItems: 'center',
+  },
+  cancelButtonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: 'bold',
   },
 });

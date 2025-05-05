@@ -6,7 +6,7 @@ import BarberiaInfoScreen from '../screens/BarberiaInfoScreen';
 import ServiciosScreen from '../screens/ServiciosScreen';
 import TiendaScreen from '../screens/TiendaScreen';
 import CarritoScreen from '../screens/CarritoScreen';
-import { useCarrito } from '../context/CarritoContext'; // Importa el contexto del carrito
+import { useCarrito } from '../context/CarritoContext'; 
 
 const Tab = createBottomTabNavigator();
 

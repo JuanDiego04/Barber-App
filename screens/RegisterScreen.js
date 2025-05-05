@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
 
 export default function RegisterScreen() {
@@ -9,14 +10,22 @@ export default function RegisterScreen() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  const handleRegister = () => {
+  const handleRegister = async () => {
     if (!nombre || !email || !password) {
       Alert.alert('Error', 'Todos los campos son obligatorios.');
       return;
     }
 
-    Alert.alert('Registro exitoso', `Bienvenido, ${nombre}!`);
-    navigation.navigate('Login'); 
+    try {
+      // Guardar datos en AsyncStorage
+      const user = { nombre, email, password };
+      await AsyncStorage.setItem('user', JSON.stringify(user));
+
+      Alert.alert('Registro exitoso', `Bienvenido, ${nombre}!`);
+      navigation.navigate('Login');
+    } catch (error) {
+      Alert.alert('Error', 'No se pudo guardar la información.');
+    }
   };
 
   return (

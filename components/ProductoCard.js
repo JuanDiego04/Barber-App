@@ -16,7 +16,7 @@ export default function ProductoCard({
   descripcion,
   imagen,
   etiqueta,
-  onAgregar, // Este se puede usar para agregar al carrito
+  onAgregar, 
 }) {
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const scaleAnim = useRef(new Animated.Value(1)).current;
@@ -54,7 +54,7 @@ export default function ProductoCard({
       <Pressable
   onPress={() => {
     agregarAlCarrito({
-      id: Math.random().toString(), // Reemplaza con un ID real si lo tienes
+      id: Math.random().toString(), 
       nombre,
       precio,
       descripcion,

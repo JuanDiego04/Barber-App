@@ -1,5 +1,4 @@
-// components/ServicioCard.js
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef } from 'react';
 import {
   View,
   Text,
@@ -9,13 +8,23 @@ import {
   Platform,
   UIManager,
   StyleSheet,
+  TextInput,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { Formik } from 'formik';
+import * as Yup from 'yup';
 
 if (Platform.OS === 'android') {
   UIManager.setLayoutAnimationEnabledExperimental &&
     UIManager.setLayoutAnimationEnabledExperimental(true);
 }
+
+// Esquema de validación con Yup
+const validationSchema = Yup.object().shape({
+  nombre: Yup.string().required('El nombre es obligatorio'),
+  correo: Yup.string().email('Correo inválido').required('El correo es obligatorio'),
+  fecha: Yup.string().required('La fecha es obligatoria'),
+});
 
 export default function ServicioCard({
   titulo,
@@ -29,6 +38,7 @@ export default function ServicioCard({
   precio,
 }) {
   const [expandido, setExpandido] = useState(false);
+  const [mostrarFormulario, setMostrarFormulario] = useState(false);
   const imagenAnimada = useRef(new Animated.Value(160)).current;
 
   const toggleExpandir = () => {
@@ -36,7 +46,7 @@ export default function ServicioCard({
 
     // Animar la imagen al expandir
     Animated.timing(imagenAnimada, {
-      toValue: expandido ? 160 : 450, // tamaño normal : expandido
+      toValue: expandido ? 160 : 450,
       duration: 300,
       useNativeDriver: false,
     }).start();
@@ -47,64 +57,114 @@ export default function ServicioCard({
   return (
     <SafeAreaView style={styles.safeArea}>
       {etiqueta && (
-  <View style={styles.etiqueta}>
-    <Text style={styles.etiquetaTexto}>{etiqueta}</Text>
-  </View>
-)}
-
-    <TouchableOpacity onPress={toggleExpandir} activeOpacity={0.9} style={styles.card}>
-      <Animated.Image
-        source={imagen}
-        style={[styles.imagen, { height: imagenAnimada }]}
-        resizeMode="cover"
-      />
-      <Text style={styles.titulo}>{titulo}</Text>
-      {expandido && (
-        <Text style={styles.descripcionDetallada}>{descripcionDetallada}</Text>
+        <View style={styles.etiqueta}>
+          <Text style={styles.etiquetaTexto}>{etiqueta}</Text>
+        </View>
       )}
-      <TouchableOpacity 
-        style={styles.botonReservar}
-         onPress={() =>
+
+      <TouchableOpacity onPress={toggleExpandir} activeOpacity={0.9} style={styles.card}>
+        <Animated.Image
+          source={imagen}
+          style={[styles.imagen, { height: imagenAnimada }]}
+          resizeMode="cover"
+        />
+        <Text style={styles.titulo}>{titulo}</Text>
+        {expandido && (
+          <Text style={styles.descripcionDetallada}>{descripcionDetallada}</Text>
+        )}
+        <TouchableOpacity
+          style={styles.botonReservar}
+          onPress={() =>
             onReservar({
               id,
               nombre: titulo,
               precio,
             })
+          }
+        >
+          <Text style={styles.textBoton}>Comprar</Text>
+        </TouchableOpacity>
 
-         }
-      >
-      <Text style={styles.textBoton}>Comprar</Text>
+        <TouchableOpacity
+          style={styles.botonAgendar}
+          onPress={() => setMostrarFormulario(!mostrarFormulario)}
+        >
+          <Text style={styles.textBotonAgendar}>Agendar Cita</Text>
+        </TouchableOpacity>
       </TouchableOpacity>
 
-      <TouchableOpacity 
-        style={styles.botonAgendar}
-        onPress={() =>
-          onAgendar({
-          id,
-          nombre: titulo,
-          precio,
-          })
-          }
-      >
-      <Text style={styles.textBotonAgendar}>Agendar Cita</Text>
-       </TouchableOpacity>
+      {/* Formulario para agendar cita */}
+      {mostrarFormulario && (
+        <Formik
+          initialValues={{ nombre: '', correo: '', fecha: '' }}
+          validationSchema={validationSchema}
+          onSubmit={(values) => {
+            onAgendar({
+              id,
+              nombre: titulo,
+              precio,
+              ...values,
+            });
+            setMostrarFormulario(false); // Ocultar formulario después de enviar
+          }}
+        >
+          {({ handleChange, handleBlur, handleSubmit, values, errors, touched }) => (
+            <View style={styles.formulario}>
+              <TextInput
+                style={styles.input}
+                placeholder="Nombre"
+                onChangeText={handleChange('nombre')}
+                onBlur={handleBlur('nombre')}
+                value={values.nombre}
+              />
+              {touched.nombre && errors.nombre && (
+                <Text style={styles.errorTexto}>{errors.nombre}</Text>
+              )}
 
-    </TouchableOpacity>
+              <TextInput
+                style={styles.input}
+                placeholder="Correo electrónico"
+                keyboardType="email-address"
+                onChangeText={handleChange('correo')}
+                onBlur={handleBlur('correo')}
+                value={values.correo}
+              />
+              {touched.correo && errors.correo && (
+                <Text style={styles.errorTexto}>{errors.correo}</Text>
+              )}
+
+              <TextInput
+                style={styles.input}
+                placeholder="Fecha (DD/MM/AAAA)"
+                onChangeText={handleChange('fecha')}
+                onBlur={handleBlur('fecha')}
+                value={values.fecha}
+              />
+              {touched.fecha && errors.fecha && (
+                <Text style={styles.errorTexto}>{errors.fecha}</Text>
+              )}
+
+              <TouchableOpacity style={styles.botonEnviar} onPress={handleSubmit}>
+                <Text style={styles.textBoton}>Enviar</Text>
+              </TouchableOpacity>
+            </View>
+          )}
+        </Formik>
+      )}
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  safeArea:{
-  backgroundColor: '#1E1E1E',
- },
-
+  safeArea: {
+    backgroundColor: '#1E1E1E',
+  },
   card: {
     backgroundColor: '#fff',
     borderRadius: 15,
     padding: 15,
     marginVertical: 10,
-    elevation: 5, 
+    elevation: 5,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.3,
@@ -120,7 +180,7 @@ const styles = StyleSheet.create({
     marginVertical: 8,
   },
   botonAgendar: {
-    backgroundColor: '#28a745', // verde bonito para agendar
+    backgroundColor: '#28a745',
     paddingVertical: 10,
     paddingHorizontal: 20,
     borderRadius: 20,
@@ -138,46 +198,48 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     textAlign: 'center',
   },
-  
-
-  botonReservar:{
+  botonReservar: {
     backgroundColor: '#0077b6',
     paddingVertical: 10,
-    paddingHorizontal:20,
+    paddingHorizontal: 20,
     borderRadius: 20,
     marginTop: 12,
     alignSelf: 'center',
     shadowColor: '#000',
-    shadowOffset: {width: 0, height: 2},
+    shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.2,
     shadowRadius: 4,
     elevation: 5,
-
   },
   textBoton: {
     fontSize: 16,
-    color: '#555',
+    color: '#fff',
     fontWeight: 'bold',
     textAlign: 'center',
   },
-  descripcionDetallada: {
-    fontSize: 14,
-    color: '#333',
-    marginTop: 8,
+  formulario: {
+    backgroundColor: '#f5f5f5',
+    padding: 15,
+    borderRadius: 10,
+    marginTop: 10,
   },
-  etiqueta: {
-    backgroundColor: '#FF5252',
-    borderRadius: 8,
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    alignSelf: 'flex-start',
-    marginTop: 4,
+  input: {
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 5,
+    padding: 10,
+    marginBottom: 10,
+    backgroundColor: '#fff',
   },
-  etiquetaTexto: {
-    color: '#fff',
+  errorTexto: {
+    color: '#dc3545',
     fontSize: 12,
-    fontWeight: 'bold',
+    marginBottom: 10,
   },
-  
+  botonEnviar: {
+    backgroundColor: '#0077b6',
+    paddingVertical: 10,
+    borderRadius: 5,
+    alignItems: 'center',
+  },
 });
-

@@ -6,7 +6,7 @@ export const CarritoContext = createContext();
 export const CarritoProvider = ({ children }) => {
   const [carrito, setCarrito] = useState([]);
 
-  // Guardar carrito en AsyncStorage
+  // Guardar carrito 
   const guardarCarrito = async (carrito) => {
     try {
       await AsyncStorage.setItem('carrito', JSON.stringify(carrito));
@@ -15,7 +15,7 @@ export const CarritoProvider = ({ children }) => {
     }
   };
 
-  // Cargar carrito desde AsyncStorage
+  // Cargar carrito
   const cargarCarrito = async () => {
     try {
       const carritoGuardado = await AsyncStorage.getItem('carrito');
@@ -42,20 +42,20 @@ export const CarritoProvider = ({ children }) => {
     }
 
     setCarrito(nuevoCarrito);
-    guardarCarrito(nuevoCarrito); // Guardar en AsyncStorage
+    guardarCarrito(nuevoCarrito); // Guardar 
   };
 
   // Vaciar carrito
   const vaciarCarrito = () => {
     setCarrito([]);
-    guardarCarrito([]); // Guardar carrito vacío en AsyncStorage
+    guardarCarrito([]); // Guardar carrito vacío
   };
 
   // Eliminar producto del carrito
   const eliminarDelCarrito = (id) => {
     const nuevoCarrito = carrito.filter((item) => item.id !== id);
     setCarrito(nuevoCarrito);
-    guardarCarrito(nuevoCarrito); // Guardar en AsyncStorage
+    guardarCarrito(nuevoCarrito); // Guardar 
   };
 
   // Actualizar cantidad
@@ -63,7 +63,7 @@ export const CarritoProvider = ({ children }) => {
     const nuevoCarrito = [...carrito];
     nuevoCarrito[index].cantidad = nuevaCantidad;
     setCarrito(nuevoCarrito);
-    guardarCarrito(nuevoCarrito); // Guardar en AsyncStorage
+    guardarCarrito(nuevoCarrito); // Guardar 
   };
 
   // Cargar carrito al iniciar la aplicación
