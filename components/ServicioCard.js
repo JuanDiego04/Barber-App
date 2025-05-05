@@ -23,7 +23,6 @@ if (Platform.OS === 'android') {
 const validationSchema = Yup.object().shape({
   nombre: Yup.string().required('El nombre es obligatorio'),
   correo: Yup.string().email('Correo inválido').required('El correo es obligatorio'),
-  fecha: Yup.string().required('La fecha es obligatoria'),
 });
 
 export default function ServicioCard({
@@ -131,17 +130,6 @@ export default function ServicioCard({
               />
               {touched.correo && errors.correo && (
                 <Text style={styles.errorTexto}>{errors.correo}</Text>
-              )}
-
-              <TextInput
-                style={styles.input}
-                placeholder="Fecha (DD/MM/AAAA)"
-                onChangeText={handleChange('fecha')}
-                onBlur={handleBlur('fecha')}
-                value={values.fecha}
-              />
-              {touched.fecha && errors.fecha && (
-                <Text style={styles.errorTexto}>{errors.fecha}</Text>
               )}
 
               <TouchableOpacity style={styles.botonEnviar} onPress={handleSubmit}>
