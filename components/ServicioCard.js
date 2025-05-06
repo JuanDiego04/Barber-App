@@ -13,6 +13,7 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
+import AsyncStorage from '@react-native-async-storage/async-storage'; // Importar AsyncStorage
 
 if (Platform.OS === 'android') {
   UIManager.setLayoutAnimationEnabledExperimental &&
@@ -53,6 +54,18 @@ export default function ServicioCard({
     setExpandido(!expandido);
   };
 
+  // Función para guardar en el historial
+  const guardarEnHistorial = async (item) => {
+    try {
+      const historialActual = await AsyncStorage.getItem('historial');
+      const historial = historialActual ? JSON.parse(historialActual) : [];
+      historial.push(item);
+      await AsyncStorage.setItem('historial', JSON.stringify(historial));
+    } catch (error) {
+      console.error('Error al guardar en el historial:', error);
+    }
+  };
+
   return (
     <SafeAreaView style={styles.safeArea}>
       {etiqueta && (
@@ -73,13 +86,11 @@ export default function ServicioCard({
         )}
         <TouchableOpacity
           style={styles.botonReservar}
-          onPress={() =>
-            onReservar({
-              id,
-              nombre: titulo,
-              precio,
-            })
-          }
+          onPress={() => {
+            const compra = { id, nombre: titulo, precio };
+            onReservar(compra);
+            guardarEnHistorial(compra); // Guardar en el historial
+          }}
         >
           <Text style={styles.textBoton}>Comprar</Text>
         </TouchableOpacity>
@@ -98,12 +109,9 @@ export default function ServicioCard({
           initialValues={{ nombre: '', correo: '', fecha: '' }}
           validationSchema={validationSchema}
           onSubmit={(values) => {
-            onAgendar({
-              id,
-              nombre: titulo,
-              precio,
-              ...values,
-            });
+            const reserva = { id, nombre: titulo, precio, ...values };
+            onAgendar(reserva);
+            guardarEnHistorial(reserva); // Guardar en el historial
             setMostrarFormulario(false); // Ocultar formulario después de enviar
           }}
         >
