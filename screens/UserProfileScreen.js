@@ -234,9 +234,9 @@ export default function UserProfileScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#1E1E1E', // Fondo oscuro para toda la pantalla
-    paddingHorizontal: 20, // Espaciado horizontal
-    paddingTop: 40, // Espaciado superior
+    backgroundColor: '#1E1E1E', 
+    paddingHorizontal: 20, 
+    paddingTop: 40, 
   },
   header: {
     flexDirection: 'row',
@@ -249,40 +249,40 @@ const styles = StyleSheet.create({
   headerText: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: '#DAA520', // Color dorado para el título
+    color: '#DAA520', 
   },
   profileContainer: {
     alignItems: 'center',
     marginBottom: 30,
     padding: 20,
-    backgroundColor: '#ffffff', // Fondo blanco para el contenedor
+    backgroundColor: '#ffffff', 
     borderRadius: 10,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 5,
-    elevation: 3, // Sombra para Android
+    elevation: 3, 
   },
   profileImage: {
-    width: 120, // Tamaño más grande para la imagen
+    width: 120, 
     height: 120,
-    borderRadius: 60, // Hacer la imagen circular
+    borderRadius: 60, 
     marginBottom: 15,
     resizeMode: 'cover',
   },
   nameText: {
     fontSize: 22,
     fontWeight: 'bold',
-    color: '#333', // Texto oscuro
+    color: '#333', 
     marginBottom: 5,
   },
   emailText: {
     fontSize: 16,
-    color: '#555', // Texto gris
+    color: '#555', 
   },
   loadingText: {
     fontSize: 16,
-    color: '#fff', // Texto blanco para el estado de carga
+    color: '#fff', 
     textAlign: 'center',
   },
   optionsContainer: {
@@ -297,7 +297,7 @@ const styles = StyleSheet.create({
     elevation: 3,
   },
   optionButton: {
-    backgroundColor: '#0077b6', // Azul para los botones
+    backgroundColor: '#0077b6', 
     paddingVertical: 12,
     paddingHorizontal: 20,
     borderRadius: 5,
@@ -310,7 +310,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   logoutButton: {
-    backgroundColor: '#dc3545', // Rojo para el botón de cerrar sesión
+    backgroundColor: '#dc3545', 
     paddingVertical: 12,
     paddingHorizontal: 20,
     borderRadius: 5,
@@ -326,7 +326,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)', // Fondo semitransparente para el modal
+    backgroundColor: 'rgba(0, 0, 0, 0.5)', 
   },
   modalContent: {
     width: '90%',

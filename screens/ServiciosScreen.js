@@ -14,9 +14,9 @@ export default function ServiciosScreen() {
 
   // Estados para el selector de fecha/hora, el servicio seleccionado y el paso actual
   const [mostrarPicker, setMostrarPicker] = useState(false);
-  const [fechaAgendada, setFechaAgendada] = useState(new Date()); // Almacena la fecha y hora seleccionada
-  const [servicioSeleccionado, setServicioSeleccionado] = useState(null); // Para guardar el servicio a agendar
-  const [step, setStep] = useState(null); // 'date' o 'time' para controlar qué picker mostrar
+  const [fechaAgendada, setFechaAgendada] = useState(new Date()); 
+  const [servicioSeleccionado, setServicioSeleccionado] = useState(null); 
+  const [step, setStep] = useState(null); 
 
   const handleReservar = (servicio) => {
     agregarAlCarrito(servicio);
@@ -24,10 +24,10 @@ export default function ServiciosScreen() {
 
   // (handleAgendar) para mostrar el picker y guardar el servicio
   const handleAgendar = (servicio) => {
-    setServicioSeleccionado(servicio); // Guarda el servicio
-    setFechaAgendada(new Date()); // Reinicia la fecha/hora al abrir
-    setStep('date'); // Empieza seleccionando la fecha
-    setMostrarPicker(true); // Muestra el selector de fecha/hora
+    setServicioSeleccionado(servicio); 
+    setFechaAgendada(new Date()); 
+    setStep('date'); 
+    setMostrarPicker(true); 
   };
 
   // Función para manejar el cambio en el DateTimePicker
@@ -88,7 +88,7 @@ export default function ServiciosScreen() {
     const hours = fechaAgendada.getHours();
     if (hours < 7 || hours > 23) {
         Alert.alert('Hora inválida', 'Por favor, selecciona una hora entre las 7 AM y las 11 PM.');
-        return; // Detiene la ejecución si la hora está fuera de rango
+        return; 
     }
 
     // Si todas las validaciones son exitosas, muestra la alerta de confirmación 
@@ -100,13 +100,12 @@ export default function ServiciosScreen() {
           day: 'numeric',
           hour: '2-digit',
           minute: '2-digit',
-          hour12: true, // Muestra en formato AM/PM
+          hour12: true, 
       })}`,
       [
         {
           text: 'OK',
           onPress: () => {
-            // Oculta el panel y limpia los estados después de confirmar
             setMostrarPicker(false);
             setServicioSeleccionado(null);
             setStep(null);
@@ -136,7 +135,7 @@ export default function ServiciosScreen() {
           titulo="Corte de Cabello"
           precio={20000}
           imagen={require('../assets/corte.png')}
-          descripcionDetallada="Incluye lavado, corte y peinado personalizado. El barbero te asesorará según la forma de tu rostro."
+          descripcionDetallada="Incluye un lavado relajante con productos premium para preparar tu cabello, seguido de un corte personalizado adaptado a la forma de tu rostro y estilo deseado. Nuestros barberos están capacitados en las últimas tendencias, como el corte fade (degradado), undercut, crop texturizado, y estilos clásicos como el pompadour o el side part. Además, ofrecemos personalización completa para que el corte refleje tu personalidad, ya sea un look moderno, casual o profesional. Finalizamos con un peinado estilizado utilizando productos de alta calidad para garantizar un acabado impecable."
           etiqueta='🔥 Popular'
           onReservar={(servicio) => agregarAlCarrito(servicio)}
           onAgendar={(servicio) => handleAgendar(servicio)}
@@ -146,7 +145,8 @@ export default function ServiciosScreen() {
           titulo="Barba"
           precio={15000}
           imagen={require('../assets/barba.png')}
-          descripcionDetallada="Contamos con productos especializados y técnica para lograr el mejor look en tu barba."
+          descripcionDetallada="Transforma tu barba con nuestro servicio especializado que incluye un diseño y perfilado personalizado adaptado a la forma de tu rostro. Utilizamos productos premium para hidratar y suavizar el vello facial, asegurando un acabado impecable. Nuestros barberos están capacitados en las técnicas más modernas, como el perfilado con navaja para líneas definidas, degradados en la barba (beard fade) y estilos clásicos como la barba completa o el estilo Van Dyke. Además, ofrecemos personalización completa para lograr un look que refleje tu personalidad, ya sea un estilo rústico, elegante o moderno. Finalizamos con aceites y bálsamos de alta calidad para nutrir tu barba y dejarla con un aroma fresco y masculino."
+          etiqueta="✨ Recomendado"
           onReservar={(servicio) => agregarAlCarrito(servicio)}
           onAgendar={(servicio) => handleAgendar(servicio)}
         />
@@ -155,7 +155,8 @@ export default function ServiciosScreen() {
           titulo="Limpieza Facial"
           precio={25000}
           imagen={require('../assets/facial.png')}
-          descripcionDetallada="Ideal para eliminar impurezas, hidratar tu piel y dejar un rostro fresco."
+          descripcionDetallada="Ideal para eliminar impurezas, hidratar tu piel y revitalizar tu rostro. Nuestro servicio de limpieza facial incluye una exfoliación profunda para remover células muertas, extracción de puntos negros y tratamiento hidratante con productos de alta calidad. Además, aplicamos mascarillas personalizadas según tu tipo de piel (seca, grasa o mixta) para garantizar un cuidado óptimo. Finalizamos con un masaje relajante que estimula la circulación y deja tu piel fresca, suave y rejuvenecida. Perfecto para combatir los efectos del estrés, la contaminación y el envejecimiento prematuro."
+          etiqueta="💆 Relajante"
           onReservar={(servicio) => agregarAlCarrito(servicio)}
           onAgendar={(servicio) => handleAgendar(servicio)}
         />
@@ -176,8 +177,8 @@ export default function ServiciosScreen() {
                mode="date" // Modo fecha
                display={Platform.OS === 'ios' ? 'spinner' : 'default'}
                onChange={onChangePicker}
-               minimumDate={new Date()} // No permitir agendar en el pasado
-               maximumDate={getMaxDate()} // Permitir hasta 30 días en el futuro
+               minimumDate={new Date()} 
+               maximumDate={getMaxDate()} 
              />
            )}
 

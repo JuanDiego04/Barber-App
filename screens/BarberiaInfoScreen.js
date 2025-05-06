@@ -1,5 +1,17 @@
-import React from 'react';
-import { View, Text, StyleSheet, ScrollView, SafeAreaView, Linking, TouchableOpacity } from 'react-native';
+import React, { useState } from 'react';
+import { 
+  View, 
+  Text, 
+  StyleSheet, 
+  ScrollView, 
+  SafeAreaView, 
+  Linking, 
+  TouchableOpacity, 
+  Image, 
+  Modal, 
+  TextInput, 
+  Alert 
+} from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
 
@@ -7,17 +19,33 @@ import { Ionicons } from '@expo/vector-icons';
 const BarberiaInfoScreen = () => {
   const navigation = useNavigation();
 
+  // Estado para el modal, la reseña y la calificación
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [review, setReview] = useState('');
+  const [rating, setRating] = useState(0);
+
   const handleReservar = () => {
-    alert('Reserva realizada (esto es una demo)');
+    navigation.navigate('Servicios'); 
+  };
+
+  const handleSubmitReview = () => {
+    if (!review || rating === 0) {
+      Alert.alert('Error', 'Por favor, completa la reseña y selecciona una calificación.');
+      return;
+    }
+    Alert.alert('¡Gracias!', 'Tu reseña ha sido enviada.');
+    setIsModalVisible(false);
+    setReview('');
+    setRating(0);
   };
 
   return (
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.container}>
-        {/* Ícono para abrir el menú o navegar */}
+        {/* Ícono para abrir el menú */}
         <TouchableOpacity
           style={styles.menuIcon}
-          onPress={() => navigation.toggleDrawer()} // Cambia 'UserProfile' por la pantalla deseada
+          onPress={() => navigation.toggleDrawer()}
         >
           <Ionicons name="menu" size={40} color="#0077b6" />
         </TouchableOpacity>
@@ -29,9 +57,16 @@ const BarberiaInfoScreen = () => {
 
         {/* Cuerpo */}
         <ScrollView style={styles.body}>
+          {/* Imagen destacada */}
+          <Image
+            source={{ uri: 'https://estaticosgn-cdn.deia.eus/clip/c7db7ad6-a82d-4051-b106-81c071cd9aff_16-9-discover-aspect-ratio_default_0.jpg' }}
+            style={styles.featuredImage}
+          />
+
+          {/* Título y descripción */}
           <Text style={styles.title}>¡Bienvenido a BarberiaShop!</Text>
           <Text style={styles.description}>
-            En BarberiaShop encontrarás más que un simple corte de cabello. Somos un espacio pensado para tu estilo, comodidad y cuidado personal. Ofrecemos servicios profesionales de barbería, desde cortes clásicos y modernos, hasta afeitados con toalla caliente y cuidado de la barba. Además, podrás explorar nuestra tienda exclusiva de productos para el cuidado masculino.
+            En BarberiaShop encontrarás más que un simple corte de cabello. Somos un espacio pensado para tu estilo, comodidad y cuidado personal.
           </Text>
 
           {/* ¿Por qué elegirnos? */}
@@ -53,57 +88,75 @@ const BarberiaInfoScreen = () => {
             💇 Atención personalizada para niños y adultos
           </Text>
 
-          {/* Testimonios */}
-          <Text style={styles.sectionTitle}>🗣️ Lo que dicen nuestros clientes</Text>
+          <Text style={styles.sectionTitle}>📅 Horarios</Text>
           <Text style={styles.description}>
-            "¡El mejor corte de mi vida! El personal es muy amable y profesional."{'\n'}
-            - Juan P.{'\n\n'}
-            "Me encanta el ambiente y la atención personalizada. ¡Recomendado!"{'\n'}
-            - María G.
+            Lunes a Viernes: 9:00 AM - 10:00 PM{'\n'}
+            Sábados y Domingos: 9:00 AM - 1:00 PM
           </Text>
 
-          {/* Horarios de Atención */}
-          <Text style={styles.sectionTitle}>🕒 Horarios de Atención</Text>
-          <Text style={styles.description}>
-            Lunes a Viernes: 8:00 AM - 11:00 PM{'\n'}
-            Sabados y Domingos: 9:00 AM - 10:00 PM{'\n'}
-          </Text>
-
-          {/* Promociones */}
-          <Text style={styles.sectionTitle}>🎉 Promociones</Text>
-          <Text style={styles.description}>
-            💵 10% de descuento en tu primera visita.{'\n'}
-            👬 Trae a un amigo y ambos obtienen un 15% de descuento.{'\n'}
-            🎁 Compra productos por más de $50,000 y recibe un regalo sorpresa.
-          </Text>
-
-          <Text style={styles.sectionTitle}>Preguntas Frecuentes</Text>
-          <Text style={styles.description}>
-            <Text style={{ fontWeight: 'bold' }}>¿Cuánto tiempo dura un corte de cabello?</Text>{'\n'}
-            Un corte de cabello promedio dura entre 30 y 45 minutos.{'\n\n'}
-            <Text style={{ fontWeight: 'bold' }}>¿Qué métodos de pago aceptan?</Text>{'\n'}
-            Aceptamos efectivo, tarjetas de crédito/débito y pagos por transferencia.{'\n\n'}
-            <Text style={{ fontWeight: 'bold' }}>¿Es necesario reservar con anticipación?</Text>{'\n'}
-            Recomendamos reservar para garantizar tu lugar, pero también aceptamos clientes sin cita.
-          </Text>
-
+          {/* Botón para dejar una reseña */}
           <Text style={styles.sectionTitle}>⭐ Califica nuestros servicios</Text>
-          <TouchableOpacity style={styles.ratingButton} onPress={() => alert('¡Gracias por tu calificación!')}>
+          <TouchableOpacity style={styles.ratingButton} onPress={() => setIsModalVisible(true)}>
             <Text style={styles.ratingButtonText}>Dejar una reseña</Text>
           </TouchableOpacity>
 
+          {/* Modal para la reseña */}
+          <Modal
+            visible={isModalVisible}
+            animationType="slide"
+            transparent={true}
+            onRequestClose={() => setIsModalVisible(false)}
+          >
+            <View style={styles.modalContainer}>
+              <View style={styles.modalContent}>
+                <Text style={styles.modalTitle}>Deja tu reseña</Text>
+
+                {/* Campo de texto para la reseña */}
+                <TextInput
+                  style={styles.input}
+                  placeholder="Escribe tu reseña aquí..."
+                  value={review}
+                  onChangeText={setReview}
+                  multiline
+                />
+
+                {/* Selección de calificación */}
+                <Text style={styles.modalSubtitle}>Calificación:</Text>
+                <View style={styles.ratingContainer}>
+                  {[1, 2, 3, 4, 5].map((star) => (
+                    <TouchableOpacity key={star} onPress={() => setRating(star)}>
+                      <Ionicons
+                        name={star <= rating ? 'star' : 'star-outline'}
+                        size={30}
+                        color="#FFD700"
+                      />
+                    </TouchableOpacity>
+                  ))}
+                </View>
+
+                {/* Botones del modal */}
+                <TouchableOpacity style={styles.submitButton} onPress={handleSubmitReview}>
+                  <Text style={styles.submitButtonText}>Enviar</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.cancelButton} onPress={() => setIsModalVisible(false)}>
+                  <Text style={styles.cancelButtonText}>Cancelar</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </Modal>
+
           {/* Botones */}
-          <View style={styles.buttonContainer}>
-            <TouchableOpacity style={styles.reserveButton} onPress={handleReservar}>
-              <Text style={styles.reserveButtonText}>Reservar ahora</Text>
-            </TouchableOpacity>
+            <View style={styles.buttonContainer}>
+              <TouchableOpacity style={styles.reserveButton} onPress={handleReservar}>
+                <Text style={styles.reserveButtonText}>Reservar ahora</Text>
+             </TouchableOpacity>
             <TouchableOpacity
               style={styles.whatsappButton}
-              onPress={() => Linking.openURL('https://wa.me/1234567890')}
-            >
-              <Text style={styles.whatsappButtonText}>Contáctanos por WhatsApp</Text>
-            </TouchableOpacity>
-          </View>
+               onPress={() => Linking.openURL('https://wa.me/1234567890')}
+           >
+            <Text style={styles.whatsappButtonText}>Contáctanos por WhatsApp</Text>
+          </TouchableOpacity>
+            </View>
 
           {/* Footer */}
           <View style={styles.footer}>
@@ -148,6 +201,13 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 20,
   },
+  featuredImage: {
+    width: '100%',
+    height: 200,
+    borderRadius: 10,
+    marginBottom: 20,
+  },
+
   title: {
     color: '#FFFFFF',
     fontSize: 20,
@@ -179,9 +239,76 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
   },
-  buttonContainer: {
+
+  modalContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  modalContent: {
+    width: '90%',
+    backgroundColor: '#fff',
+    borderRadius: 10,
+    padding: 20,
+    alignItems: 'center',
+  },
+  modalTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginBottom: 20,
+    color: '#333',
+  },
+  modalSubtitle: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginBottom: 10,
+    color: '#555',
+  },
+  input: {
+    width: '100%',
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 5,
+    padding: 10,
+    marginBottom: 20,
+    backgroundColor: '#f9f9f9',
+    textAlignVertical: 'top',
+  },
+  ratingContainer: {
+    flexDirection: 'row',
+    marginBottom: 20,
+  },
+  submitButton: {
+    backgroundColor: '#0077b6',
+    padding: 10,
+    borderRadius: 5,
+    marginTop: 10,
+    width: '100%',
+    alignItems: 'center',
+  },
+  submitButtonText: {
+    color: '#fff',
+    fontWeight: 'bold',
+  },
+  cancelButton: {
+    backgroundColor: '#dc3545',
+    padding: 10,
+    borderRadius: 5,
+    marginTop: 10,
+    width: '100%',
+    alignItems: 'center',
+  },
+
+  cancelButtonText: {
+    color: '#fff',
+    fontWeight: 'bold',
+  },
+
+  buttonContainer: {	
     marginVertical: 20,
   },
+
   reserveButton: {
     backgroundColor: '#DAA520',
     paddingVertical: 15,
@@ -189,27 +316,32 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 10,
   },
+
   reserveButtonText: {
     color: '#fff',
     fontSize: 18,
     fontWeight: 'bold',
   },
+
   whatsappButton: {
     backgroundColor: '#25D366',
     paddingVertical: 15,
     borderRadius: 25,
     alignItems: 'center',
   },
+
   whatsappButtonText: {
     color: '#fff',
     fontSize: 18,
     fontWeight: 'bold',
   },
+
   footer: {
     padding: 20,
     backgroundColor: '#2C2C2C',
     alignItems: 'center',
   },
+
   footerText: {
     fontSize: 14,
     color: '#ffffff',
