@@ -75,7 +75,10 @@ export default function CarritoScreen({ navigation }) {
       {carrito.length > 0 && (
         <View style={styles.footer}>
           <Text style={styles.totalText}>Total: ${calcularTotal()}</Text>
-          <TouchableOpacity style={styles.checkoutButton} onPress={() => navigation.navigate('PagoScreen')}>
+          <TouchableOpacity
+            style={styles.checkoutButton}
+            onPress={() => navigation.navigate('Pago', { total: calcularTotal() })}
+          >
             <Text style={styles.checkoutButtonText}>Ir a Pagar</Text>
           </TouchableOpacity>
           <TouchableOpacity style={styles.clearButton} onPress={() => setModalVisible(true)}>
@@ -105,7 +108,6 @@ export default function CarritoScreen({ navigation }) {
     </View>
   );
 }
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
