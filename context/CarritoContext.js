@@ -1,29 +1,29 @@
-import React, { createContext, useState, useContext, useEffect } from 'react';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import React, { createContext, useState, useContext, useEffect } from "react";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export const CarritoContext = createContext();
 
 export const CarritoProvider = ({ children }) => {
   const [carrito, setCarrito] = useState([]);
 
-  // Guardar carrito 
+  // Guardar carrito
   const guardarCarrito = async (carrito) => {
     try {
-      await AsyncStorage.setItem('carrito', JSON.stringify(carrito));
+      await AsyncStorage.setItem("carrito", JSON.stringify(carrito));
     } catch (error) {
-      console.error('Error al guardar el carrito:', error);
+      console.error("Error al guardar el carrito:", error);
     }
   };
 
   // Cargar carrito
   const cargarCarrito = async () => {
     try {
-      const carritoGuardado = await AsyncStorage.getItem('carrito');
+      const carritoGuardado = await AsyncStorage.getItem("carrito");
       if (carritoGuardado) {
         setCarrito(JSON.parse(carritoGuardado));
       }
     } catch (error) {
-      console.error('Error al cargar el carrito:', error);
+      console.error("Error al cargar el carrito:", error);
     }
   };
 
@@ -42,20 +42,20 @@ export const CarritoProvider = ({ children }) => {
     }
 
     setCarrito(nuevoCarrito);
-    guardarCarrito(nuevoCarrito); // Guardar 
+    guardarCarrito(nuevoCarrito);
   };
 
   // Vaciar carrito
   const vaciarCarrito = () => {
     setCarrito([]);
-    guardarCarrito([]); // Guardar carrito vacío
+    guardarCarrito([]);
   };
 
   // Eliminar producto del carrito
   const eliminarDelCarrito = (id) => {
     const nuevoCarrito = carrito.filter((item) => item.id !== id);
     setCarrito(nuevoCarrito);
-    guardarCarrito(nuevoCarrito); // Guardar 
+    guardarCarrito(nuevoCarrito);
   };
 
   // Actualizar cantidad
@@ -63,7 +63,7 @@ export const CarritoProvider = ({ children }) => {
     const nuevoCarrito = [...carrito];
     nuevoCarrito[index].cantidad = nuevaCantidad;
     setCarrito(nuevoCarrito);
-    guardarCarrito(nuevoCarrito); // Guardar 
+    guardarCarrito(nuevoCarrito);
   };
 
   // Cargar carrito al iniciar la aplicación

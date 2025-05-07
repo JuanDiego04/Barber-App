@@ -1,93 +1,117 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useNavigation } from '@react-navigation/native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, ImageBackground } from 'react-native';
 
-export default function RegisterScreen() {
-  const navigation = useNavigation();
-
-  const [nombre, setNombre] = useState('');
+export default function RegisterScreen({ navigation }) {
+  const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
 
-  const handleRegister = async () => {
-    if (!nombre || !email || !password) {
+  const handleRegister = () => {
+    if (!name || !email || !password || !confirmPassword) {
       Alert.alert('Error', 'Todos los campos son obligatorios.');
       return;
     }
 
-    try {
-      // Guardar datos en AsyncStorage
-      const user = { nombre, email, password };
-      await AsyncStorage.setItem('user', JSON.stringify(user));
-
-      Alert.alert('Registro exitoso', `Bienvenido, ${nombre}!`);
-      navigation.navigate('Login');
-    } catch (error) {
-      Alert.alert('Error', 'No se pudo guardar la información.');
+    if (password !== confirmPassword) {
+      Alert.alert('Error', 'Las contraseñas no coinciden.');
+      return;
     }
+
+    // Simular registro exitoso
+    Alert.alert('Registro exitoso', '¡Tu cuenta ha sido creada con éxito!');
+    navigation.navigate('Login'); 
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Regístrate</Text>
-      <TextInput
-        style={styles.input}
-        placeholder="Nombre completo"
-        value={nombre}
-        onChangeText={setNombre}
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Correo electrónico"
-        value={email}
-        onChangeText={setEmail}
-        keyboardType="email-address"
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Contraseña"
-        value={password}
-        onChangeText={setPassword}
-        secureTextEntry
-      />
-      <TouchableOpacity style={styles.button} onPress={handleRegister}>
-        <Text style={styles.buttonText}>Crear Cuenta</Text>
-      </TouchableOpacity>
-      <TouchableOpacity onPress={() => navigation.navigate('Login')}>
-        <Text style={styles.link}>¿Ya tienes una cuenta? Inicia sesión</Text>
-      </TouchableOpacity>
-    </View>
+    <ImageBackground
+      source={require('../assets/registro.jpg')} 
+      style={styles.background}
+    >
+      <View style={styles.overlay}>
+        <View style={styles.container}>
+          <Text style={styles.title}>Crear Cuenta</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="Nombre completo"
+            placeholderTextColor="#ccc"
+            value={name}
+            onChangeText={setName}
+          />
+          <TextInput
+            style={styles.input}
+            placeholder="Correo electrónico"
+            placeholderTextColor="#ccc"
+            value={email}
+            onChangeText={setEmail}
+            keyboardType="email-address"
+          />
+          <TextInput
+            style={styles.input}
+            placeholder="Contraseña"
+            placeholderTextColor="#ccc"
+            value={password}
+            onChangeText={setPassword}
+            secureTextEntry
+          />
+          <TextInput
+            style={styles.input}
+            placeholder="Confirmar contraseña"
+            placeholderTextColor="#ccc"
+            value={confirmPassword}
+            onChangeText={setConfirmPassword}
+            secureTextEntry
+          />
+          <TouchableOpacity style={styles.button} onPress={handleRegister}>
+            <Text style={styles.buttonText}>Registrarse</Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => navigation.navigate('Login')}>
+            <Text style={styles.link}>¿Ya tienes una cuenta? Inicia Sesión</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+    </ImageBackground>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
+  background: {
     flex: 1,
+    resizeMode: 'cover',
+  },
+  overlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)', 
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  container: {
+    width: '90%',
     padding: 20,
-    backgroundColor: '#f8f9fa',
+    backgroundColor: 'rgba(255, 255, 255, 0.9)', 
+    borderRadius: 10,
+    alignItems: 'center',
   },
   title: {
-    fontSize: 24,
+    fontSize: 28,
     fontWeight: 'bold',
-    marginBottom: 20,
     color: '#0077b6',
+    marginBottom: 20,
   },
   input: {
     width: '100%',
     padding: 15,
-    marginBottom: 10,
+    marginBottom: 15,
     borderWidth: 1,
     borderColor: '#ccc',
-    borderRadius: 5,
+    borderRadius: 10,
     backgroundColor: '#fff',
+    color: '#333',
   },
   button: {
     backgroundColor: '#0077b6',
     padding: 15,
-    borderRadius: 5,
+    borderRadius: 10,
     width: '100%',
     alignItems: 'center',
     marginBottom: 10,
@@ -100,5 +124,7 @@ const styles = StyleSheet.create({
   link: {
     color: '#0077b6',
     marginTop: 10,
+    fontSize: 14,
+    fontWeight: 'bold',
   },
 });

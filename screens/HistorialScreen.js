@@ -51,7 +51,7 @@ export default function HistorialScreen() {
         historial[id].fecha = nuevaFecha;
         await AsyncStorage.setItem('historial', JSON.stringify(historial));
         setHistorial(historial);
-        setNuevaFecha(''); // Limpiar el campo de fecha
+        setNuevaFecha(''); 
       }
     } catch (error) {
       console.error('Error al aplazar la reserva:', error);
@@ -123,11 +123,13 @@ const styles = StyleSheet.create({
   },
   backButton: {
     marginRight: 10,
+    marginTop: 20,
   },
   header: {
     fontSize: 24,
     fontWeight: 'bold',
     color: '#DAA520',
+    marginTop: 15,
   },
   item: {
     backgroundColor: '#fff',

@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef } from "react";
 import {
   View,
   Text,
@@ -9,21 +9,23 @@ import {
   UIManager,
   StyleSheet,
   TextInput,
-} from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { Formik } from 'formik';
-import * as Yup from 'yup';
-import AsyncStorage from '@react-native-async-storage/async-storage'; // Importar AsyncStorage
+} from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { Formik } from "formik";
+import * as Yup from "yup";
+import AsyncStorage from "@react-native-async-storage/async-storage"; // Importar AsyncStorage
 
-if (Platform.OS === 'android') {
+if (Platform.OS === "android") {
   UIManager.setLayoutAnimationEnabledExperimental &&
     UIManager.setLayoutAnimationEnabledExperimental(true);
 }
 
 // Esquema de validación con Yup
 const validationSchema = Yup.object().shape({
-  nombre: Yup.string().required('El nombre es obligatorio'),
-  correo: Yup.string().email('Correo inválido').required('El correo es obligatorio'),
+  nombre: Yup.string().required("El nombre es obligatorio"),
+  correo: Yup.string()
+    .email("Correo inválido")
+    .required("El correo es obligatorio"),
 });
 
 export default function ServicioCard({
@@ -57,12 +59,12 @@ export default function ServicioCard({
   // Función para guardar en el historial
   const guardarEnHistorial = async (item) => {
     try {
-      const historialActual = await AsyncStorage.getItem('historial');
+      const historialActual = await AsyncStorage.getItem("historial");
       const historial = historialActual ? JSON.parse(historialActual) : [];
       historial.push(item);
-      await AsyncStorage.setItem('historial', JSON.stringify(historial));
+      await AsyncStorage.setItem("historial", JSON.stringify(historial));
     } catch (error) {
-      console.error('Error al guardar en el historial:', error);
+      console.error("Error al guardar en el historial:", error);
     }
   };
 
@@ -74,7 +76,11 @@ export default function ServicioCard({
         </View>
       )}
 
-      <TouchableOpacity onPress={toggleExpandir} activeOpacity={0.9} style={styles.card}>
+      <TouchableOpacity
+        onPress={toggleExpandir}
+        activeOpacity={0.9}
+        style={styles.card}
+      >
         <Animated.Image
           source={imagen}
           style={[styles.imagen, { height: imagenAnimada }]}
@@ -82,7 +88,9 @@ export default function ServicioCard({
         />
         <Text style={styles.titulo}>{titulo}</Text>
         {expandido && (
-          <Text style={styles.descripcionDetallada}>{descripcionDetallada}</Text>
+          <Text style={styles.descripcionDetallada}>
+            {descripcionDetallada}
+          </Text>
         )}
         <TouchableOpacity
           style={styles.botonReservar}
@@ -106,7 +114,7 @@ export default function ServicioCard({
       {/* Formulario para agendar cita */}
       {mostrarFormulario && (
         <Formik
-          initialValues={{ nombre: '', correo: '', fecha: '' }}
+          initialValues={{ nombre: "", correo: "", fecha: "" }}
           validationSchema={validationSchema}
           onSubmit={(values) => {
             const reserva = { id, nombre: titulo, precio, ...values };
@@ -115,13 +123,20 @@ export default function ServicioCard({
             setMostrarFormulario(false); // Ocultar formulario después de enviar
           }}
         >
-          {({ handleChange, handleBlur, handleSubmit, values, errors, touched }) => (
+          {({
+            handleChange,
+            handleBlur,
+            handleSubmit,
+            values,
+            errors,
+            touched,
+          }) => (
             <View style={styles.formulario}>
               <TextInput
                 style={styles.input}
                 placeholder="Nombre"
-                onChangeText={handleChange('nombre')}
-                onBlur={handleBlur('nombre')}
+                onChangeText={handleChange("nombre")}
+                onBlur={handleBlur("nombre")}
                 value={values.nombre}
               />
               {touched.nombre && errors.nombre && (
@@ -132,15 +147,18 @@ export default function ServicioCard({
                 style={styles.input}
                 placeholder="Correo electrónico"
                 keyboardType="email-address"
-                onChangeText={handleChange('correo')}
-                onBlur={handleBlur('correo')}
+                onChangeText={handleChange("correo")}
+                onBlur={handleBlur("correo")}
                 value={values.correo}
               />
               {touched.correo && errors.correo && (
                 <Text style={styles.errorTexto}>{errors.correo}</Text>
               )}
 
-              <TouchableOpacity style={styles.botonEnviar} onPress={handleSubmit}>
+              <TouchableOpacity
+                style={styles.botonEnviar}
+                onPress={handleSubmit}
+              >
                 <Text style={styles.textBoton}>Enviar</Text>
               </TouchableOpacity>
             </View>
@@ -153,36 +171,36 @@ export default function ServicioCard({
 
 const styles = StyleSheet.create({
   safeArea: {
-    backgroundColor: '#1E1E1E',
+    backgroundColor: "#1E1E1E",
   },
   card: {
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
     borderRadius: 15,
     padding: 15,
     marginVertical: 10,
     elevation: 5,
-    shadowColor: '#000',
+    shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.3,
     shadowRadius: 4,
   },
   imagen: {
-    width: '100%',
+    width: "100%",
     borderRadius: 10,
   },
   titulo: {
     fontSize: 18,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginVertical: 8,
   },
   botonAgendar: {
-    backgroundColor: '#28a745',
+    backgroundColor: "#28a745",
     paddingVertical: 10,
     paddingHorizontal: 20,
     borderRadius: 20,
     marginTop: 8,
-    alignSelf: 'center',
-    shadowColor: '#000',
+    alignSelf: "center",
+    shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.2,
     shadowRadius: 4,
@@ -190,18 +208,18 @@ const styles = StyleSheet.create({
   },
   textBotonAgendar: {
     fontSize: 16,
-    color: '#fff',
-    fontWeight: 'bold',
-    textAlign: 'center',
+    color: "#fff",
+    fontWeight: "bold",
+    textAlign: "center",
   },
   botonReservar: {
-    backgroundColor: '#0077b6',
+    backgroundColor: "#0077b6",
     paddingVertical: 10,
     paddingHorizontal: 20,
     borderRadius: 20,
     marginTop: 12,
-    alignSelf: 'center',
-    shadowColor: '#000',
+    alignSelf: "center",
+    shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.2,
     shadowRadius: 4,
@@ -209,33 +227,33 @@ const styles = StyleSheet.create({
   },
   textBoton: {
     fontSize: 16,
-    color: '#fff',
-    fontWeight: 'bold',
-    textAlign: 'center',
+    color: "#fff",
+    fontWeight: "bold",
+    textAlign: "center",
   },
   formulario: {
-    backgroundColor: '#f5f5f5',
+    backgroundColor: "#f5f5f5",
     padding: 15,
     borderRadius: 10,
     marginTop: 10,
   },
   input: {
     borderWidth: 1,
-    borderColor: '#ccc',
+    borderColor: "#ccc",
     borderRadius: 5,
     padding: 10,
     marginBottom: 10,
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
   },
   errorTexto: {
-    color: '#dc3545',
+    color: "#dc3545",
     fontSize: 12,
     marginBottom: 10,
   },
   botonEnviar: {
-    backgroundColor: '#0077b6',
+    backgroundColor: "#0077b6",
     paddingVertical: 10,
     borderRadius: 5,
-    alignItems: 'center',
+    alignItems: "center",
   },
 });

@@ -1,36 +1,51 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Alert, TextInput } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
+import React, { useState } from "react";
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  Alert,
+  TextInput,
+} from "react-native";
+import { Ionicons } from "@expo/vector-icons";
 
 const PagoScreen = ({ route, navigation }) => {
-  const { total } = route.params; // Recibe el total desde el carrito
+  const { total } = route.params;
   const [metodoPago, setMetodoPago] = useState(null);
-  const [mostrarFormularioTarjeta, setMostrarFormularioTarjeta] = useState(false);
-  const [numeroTarjeta, setNumeroTarjeta] = useState('');
-  const [fechaExpiracion, setFechaExpiracion] = useState('');
-  const [cvv, setCvv] = useState('');
+  const [mostrarFormularioTarjeta, setMostrarFormularioTarjeta] =
+    useState(false);
+  const [numeroTarjeta, setNumeroTarjeta] = useState("");
+  const [fechaExpiracion, setFechaExpiracion] = useState("");
+  const [cvv, setCvv] = useState("");
 
   // Asegurarse de que el total sea un número
-  const totalNumerico = typeof total === 'string' ? parseFloat(total.replace(/,/g, '')) : total;
+  const totalNumerico =
+    typeof total === "string" ? parseFloat(total.replace(/,/g, "")) : total;
 
   const handleConfirmarPago = () => {
     if (!metodoPago) {
-      Alert.alert('Error', 'Por favor, selecciona un método de pago.');
+      Alert.alert("Error", "Por favor, selecciona un método de pago.");
       return;
     }
 
-    if (metodoPago === 'Tarjeta de Crédito' && (!numeroTarjeta || !fechaExpiracion || !cvv)) {
-      Alert.alert('Error', 'Por favor, completa todos los datos de la tarjeta.');
+    if (
+      metodoPago === "Tarjeta de Crédito" &&
+      (!numeroTarjeta || !fechaExpiracion || !cvv)
+    ) {
+      Alert.alert(
+        "Error",
+        "Por favor, completa todos los datos de la tarjeta."
+      );
       return;
     }
 
     Alert.alert(
-      'Pago Confirmado',
+      "Pago Confirmado",
       `Has pagado $${totalNumerico.toFixed(2)} usando ${metodoPago}. ¡Gracias por tu compra!`,
       [
         {
-          text: 'OK',
-          onPress: () => navigation.navigate('HomeTabs'),
+          text: "OK",
+          onPress: () => navigation.navigate("HomeTabs"),
         },
       ]
     );
@@ -38,14 +53,17 @@ const PagoScreen = ({ route, navigation }) => {
 
   const handleSeleccionarMetodoPago = (metodo) => {
     setMetodoPago(metodo);
-    setMostrarFormularioTarjeta(metodo === 'Tarjeta de Crédito');
+    setMostrarFormularioTarjeta(metodo === "Tarjeta de Crédito");
   };
 
   return (
     <View style={styles.container}>
       {/* Header */}
       <View style={styles.header}>
-        <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
+        <TouchableOpacity
+          onPress={() => navigation.goBack()}
+          style={styles.backButton}
+        >
           <Ionicons name="arrow-back" size={24} color="#DAA520" />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>Pago</Text>
@@ -58,9 +76,9 @@ const PagoScreen = ({ route, navigation }) => {
       <TouchableOpacity
         style={[
           styles.paymentOption,
-          metodoPago === 'Tarjeta de Crédito' && styles.selectedOption,
+          metodoPago === "Tarjeta de Crédito" && styles.selectedOption,
         ]}
-        onPress={() => handleSeleccionarMetodoPago('Tarjeta de Crédito')}
+        onPress={() => handleSeleccionarMetodoPago("Tarjeta de Crédito")}
       >
         <Text style={styles.paymentText}>Tarjeta de Crédito</Text>
       </TouchableOpacity>
@@ -68,9 +86,9 @@ const PagoScreen = ({ route, navigation }) => {
       <TouchableOpacity
         style={[
           styles.paymentOption,
-          metodoPago === 'PayPal' && styles.selectedOption,
+          metodoPago === "PayPal" && styles.selectedOption,
         ]}
-        onPress={() => handleSeleccionarMetodoPago('PayPal')}
+        onPress={() => handleSeleccionarMetodoPago("PayPal")}
       >
         <Text style={styles.paymentText}>PayPal</Text>
       </TouchableOpacity>
@@ -78,9 +96,9 @@ const PagoScreen = ({ route, navigation }) => {
       <TouchableOpacity
         style={[
           styles.paymentOption,
-          metodoPago === 'Efectivo' && styles.selectedOption,
+          metodoPago === "Efectivo" && styles.selectedOption,
         ]}
-        onPress={() => handleSeleccionarMetodoPago('Efectivo')}
+        onPress={() => handleSeleccionarMetodoPago("Efectivo")}
       >
         <Text style={styles.paymentText}>Efectivo</Text>
       </TouchableOpacity>
@@ -137,12 +155,12 @@ export default PagoScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#1E1E1E',
+    backgroundColor: "#1E1E1E",
     padding: 20,
   },
   header: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     marginBottom: 20,
   },
   backButton: {
@@ -150,69 +168,69 @@ const styles = StyleSheet.create({
   },
   headerTitle: {
     fontSize: 24,
-    fontWeight: 'bold',
-    color: '#DAA520',
+    fontWeight: "bold",
+    color: "#DAA520",
   },
   totalText: {
     fontSize: 20,
-    color: '#fff',
-    textAlign: 'center',
+    color: "#fff",
+    textAlign: "center",
     marginBottom: 30,
   },
   paymentOption: {
     padding: 15,
     borderWidth: 1,
-    borderColor: '#DAA520',
+    borderColor: "#DAA520",
     borderRadius: 10,
     marginBottom: 15,
-    alignItems: 'center',
-    backgroundColor: '#1E1E1E',
+    alignItems: "center",
+    backgroundColor: "#1E1E1E",
   },
   selectedOption: {
-    backgroundColor: '#DAA520',
+    backgroundColor: "#DAA520",
   },
   paymentText: {
     fontSize: 18,
-    color: '#fff',
+    color: "#fff",
   },
   cardForm: {
     marginTop: 20,
   },
   input: {
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
     padding: 10,
     borderRadius: 5,
     marginBottom: 10,
   },
   buttonContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    justifyContent: "space-between",
     marginTop: 30,
   },
   cancelButton: {
     flex: 1,
-    backgroundColor: '#dc3545',
+    backgroundColor: "#dc3545",
     padding: 15,
     borderRadius: 10,
-    alignItems: 'center',
+    alignItems: "center",
     marginRight: 10,
   },
   cancelButtonText: {
-    color: '#fff',
+    color: "#fff",
     fontSize: 16,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   confirmButton: {
     flex: 1,
-    backgroundColor: '#25D366',
+    backgroundColor: "#25D366",
     padding: 15,
     borderRadius: 10,
-    alignItems: 'center',
+    alignItems: "center",
     marginLeft: 10,
   },
   confirmButtonText: {
-    color: '#fff',
+    color: "#fff",
     fontSize: 16,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
 });

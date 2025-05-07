@@ -1,6 +1,5 @@
-import React, { createContext, useState, useContext } from 'react';
+import React, { createContext, useState, useContext } from "react";
 
-// Crea el contexto de autenticación
 const AuthContext = createContext();
 
 // Proveedor del contexto de autenticación
@@ -8,11 +7,11 @@ export function AuthProvider({ children }) {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   const login = () => {
-    setIsAuthenticated(true); // Cambia el estado a autenticado
+    setIsAuthenticated(true);
   };
 
   const logout = () => {
-    setIsAuthenticated(false); // Cambia el estado a no autenticado
+    setIsAuthenticated(false);
   };
 
   return (

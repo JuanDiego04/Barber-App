@@ -1,46 +1,58 @@
-import React from 'react';
-import { View, FlatList, StyleSheet, Text, Image, TouchableOpacity } from 'react-native';
-import ProductoCard from '../components/ProductoCard';  // Asegúrate de que este componente esté correctamente implementado
+import React from "react";
+import {
+  View,
+  FlatList,
+  StyleSheet,
+  Text,
+  Image,
+  TouchableOpacity,
+} from "react-native";
+import ProductoCard from "../components/ProductoCard";
 
 const productos = [
   {
-    id: '1',
-    nombre: 'Aceite Grave',
+    id: "1",
+    nombre: "Aceite Grave",
     precio: 22000,
-    descripcion: 'La crema o loción para barba ofrece excelentes propiedades hidratantes.',
-    imagen: require('../assets/aceitebarba.png'),
-    etiqueta: '🔥 Popular',
+    descripcion:
+      "La crema o loción para barba ofrece excelentes propiedades hidratantes.",
+    imagen: require("../assets/aceitebarba.png"),
+    etiqueta: "🔥 Popular",
   },
   {
-    id: '2',
-    nombre: 'Balsamo Grave',
+    id: "2",
+    nombre: "Balsamo Grave",
     precio: 24000,
-    descripcion: 'Esta mantequilla suaviza y moldea la barba, ejerciendo un efecto reparador.',
-    imagen: require('../assets/balsamo.png'),
-    etiqueta: '🧼 Nuevo',
+    descripcion:
+      "Esta mantequilla suaviza y moldea la barba, ejerciendo un efecto reparador.",
+    imagen: require("../assets/balsamo.png"),
+    etiqueta: "🧼 Nuevo",
   },
   {
-    id: '3',
-    nombre: 'Minofoam',
+    id: "3",
+    nombre: "Minofoam",
     precio: 42000,
-    descripcion: 'Es una espuma tópica que contiene minoxidil al 5%, utilizada para tratar la alopecia.',
-    imagen: require('../assets/minofoam.png'),
-    etiqueta: '⭐ Recomendado',
+    descripcion:
+      "Es una espuma tópica que contiene minoxidil al 5%, utilizada para tratar la alopecia.",
+    imagen: require("../assets/minofoam.png"),
+    etiqueta: "⭐ Recomendado",
   },
   {
-    id: '4',
-    nombre: 'Reelance Cejas',
+    id: "4",
+    nombre: "Reelance Cejas",
     precio: 25000,
-    descripcion: 'Tratamiento para estimular el crecimiento del vello en las cejas.',
-    imagen: require('../assets/reelancecejas.png'),
+    descripcion:
+      "Tratamiento para estimular el crecimiento del vello en las cejas.",
+    imagen: require("../assets/reelancecejas.png"),
     etiqueta: null,
   },
   {
-    id: '5',
-    nombre: 'Reelance Capilar',
+    id: "5",
+    nombre: "Reelance Capilar",
     precio: 30000,
-    descripcion: 'Detiene la caída de cabello y estimula el crecimiento de cabello nuevo.',
-    imagen: require('../assets/reelance.png'),
+    descripcion:
+      "Detiene la caída de cabello y estimula el crecimiento de cabello nuevo.",
+    imagen: require("../assets/reelance.png"),
     etiqueta: null,
   },
 ];
@@ -73,7 +85,7 @@ export default function TiendaScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f4f4f4',
+    backgroundColor: "#f4f4f4",
   },
   lista: {
     padding: 10,
@@ -81,14 +93,14 @@ const styles = StyleSheet.create({
   header: {
     paddingTop: 20,
     paddingBottom: 10,
-    backgroundColor: '#fff',
-    alignItems: 'center',
+    backgroundColor: "#fff",
+    alignItems: "center",
     borderBottomWidth: 1,
-    borderBottomColor: '#ddd',
+    borderBottomColor: "#ddd",
   },
   titulo: {
     fontSize: 24,
-    fontWeight: 'bold',
-    color: '#333',
+    fontWeight: "bold",
+    color: "#333",
   },
 });

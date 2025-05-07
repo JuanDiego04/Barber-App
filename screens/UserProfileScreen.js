@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, TouchableOpacity, Image, Alert, Modal, TextInpu
 import { useNavigation } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import * as ImagePicker from 'expo-image-picker'; // Importar expo-image-picker
+import * as ImagePicker from 'expo-image-picker'; 
 import { useAuth } from '../context/AuthContext';
 
 export default function UserProfileScreen() {
@@ -11,8 +11,8 @@ export default function UserProfileScreen() {
   const { logout } = useAuth();
   const [user, setUser] = useState(null);
   const [profileImage, setProfileImage] = useState(null);
-  const [isEditing, setIsEditing] = useState(false); // Estado para el modal de editar perfil
-  const [isChangingPassword, setIsChangingPassword] = useState(false); // Estado para el modal de cambiar contraseña
+  const [isEditing, setIsEditing] = useState(false); 
+  const [isChangingPassword, setIsChangingPassword] = useState(false); 
   const [newName, setNewName] = useState('');
   const [newEmail, setNewEmail] = useState('');
   const [currentPassword, setCurrentPassword] = useState('');

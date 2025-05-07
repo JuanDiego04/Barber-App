@@ -1,14 +1,14 @@
-import React, { useRef, useEffect, useContext } from 'react';
+import React, { useRef, useEffect, useContext } from "react";
 import {
   Text,
   Image,
   StyleSheet,
   Animated,
   Pressable,
-  View, 
-} from 'react-native';
+  View,
+} from "react-native";
 
-import { CarritoContext } from '../context/CarritoContext';
+import { CarritoContext } from "../context/CarritoContext";
 
 export default function ProductoCard({
   nombre,
@@ -16,7 +16,7 @@ export default function ProductoCard({
   descripcion,
   imagen,
   etiqueta,
-  onAgregar, 
+  onAgregar,
 }) {
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const scaleAnim = useRef(new Animated.Value(1)).current;
@@ -49,33 +49,36 @@ export default function ProductoCard({
 
   return (
     <Animated.View
-      style={[styles.card, { opacity: fadeAnim, transform: [{ scale: scaleAnim }] }]}
+      style={[
+        styles.card,
+        { opacity: fadeAnim, transform: [{ scale: scaleAnim }] },
+      ]}
     >
       <Pressable
-  onPress={() => {
-    agregarAlCarrito({
-      id: Math.random().toString(), 
-      nombre,
-      precio,
-      descripcion,
-      imagen,
-      etiqueta,
-    });
-  }}
-  onPressIn={handlePressIn}
-  onPressOut={handlePressOut}
-  style={styles.pressable}
->
-  <Image source={imagen} style={styles.imagen} />
-  <Text style={styles.nombre}>{nombre}</Text>
-  <Text style={styles.descripcion}>{descripcion}</Text>
-  <Text style={styles.precio}>${precio}</Text>
-  {etiqueta && (
-    <View style={styles.etiquetaContenedor}>
-      <Text style={styles.etiqueta}>{etiqueta}</Text>
-    </View>
-  )}
-</Pressable>
+        onPress={() => {
+          agregarAlCarrito({
+            id: Math.random().toString(),
+            nombre,
+            precio,
+            descripcion,
+            imagen,
+            etiqueta,
+          });
+        }}
+        onPressIn={handlePressIn}
+        onPressOut={handlePressOut}
+        style={styles.pressable}
+      >
+        <Image source={imagen} style={styles.imagen} />
+        <Text style={styles.nombre}>{nombre}</Text>
+        <Text style={styles.descripcion}>{descripcion}</Text>
+        <Text style={styles.precio}>${precio}</Text>
+        {etiqueta && (
+          <View style={styles.etiquetaContenedor}>
+            <Text style={styles.etiqueta}>{etiqueta}</Text>
+          </View>
+        )}
+      </Pressable>
     </Animated.View>
   );
 }
@@ -83,12 +86,12 @@ export default function ProductoCard({
 const styles = StyleSheet.create({
   card: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
     borderRadius: 12,
     padding: 12,
     margin: 8,
-    alignItems: 'center',
-    shadowColor: '#000',
+    alignItems: "center",
+    shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 6,
@@ -101,34 +104,34 @@ const styles = StyleSheet.create({
   },
   nombre: {
     fontSize: 16,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginTop: 8,
   },
   descripcion: {
     fontSize: 13,
-    color: '#666',
-    textAlign: 'center',
+    color: "#666",
+    textAlign: "center",
     marginTop: 4,
   },
   precio: {
     fontSize: 14,
-    fontWeight: 'bold',
-    color: '#333',
+    fontWeight: "bold",
+    color: "#333",
     marginTop: 4,
   },
   etiquetaContenedor: {
     marginTop: 6,
-    backgroundColor: '#fdecef',
+    backgroundColor: "#fdecef",
     paddingHorizontal: 6,
     paddingVertical: 2,
     borderRadius: 8,
   },
   etiqueta: {
     fontSize: 12,
-    color: '#E91E63',
-    fontWeight: 'bold',
+    color: "#E91E63",
+    fontWeight: "bold",
   },
   pressable: {
-    alignItems: 'center',
+    alignItems: "center",
   },
 });
