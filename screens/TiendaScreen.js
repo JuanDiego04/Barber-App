@@ -22,7 +22,7 @@ export default function TiendaScreen() {
   const [loading, setLoading] = useState(true);
 
   const getBaseUrl = () => {
-    const localIp = "192.168.x.x"; // Reemplaza con la IP de tu máquina
+    const localIp = "1186.1.185.15"; 
     const localhostUrl = "http://localhost/barberapp/api/productos";
     const localIpUrl = `http://${localIp}/barberapp/api/productos`;
 
@@ -34,7 +34,7 @@ export default function TiendaScreen() {
 
   const fetchProductos = async () => {
     try {
-      const response = await fetch(`${getBaseUrl()}/obtener.php`); // Método GET por defecto
+      const response = await fetch(`${getBaseUrl()}/obtener.php`); 
       if (!response.ok) {
         throw new Error("Error al obtener los productos");
       }

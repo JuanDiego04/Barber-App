@@ -11,7 +11,7 @@ import { useCarrito } from "../context/CarritoContext";
 const Tab = createBottomTabNavigator();
 
 export default function BottomTabsNavigator() {
-  const { carrito } = useCarrito(); // Obtén el estado del carrito
+  const { carrito } = useCarrito(); 
 
   // Calcula la cantidad total de productos en el carrito
   const obtenerCantidadTotal = () => {

@@ -13,7 +13,7 @@ import {
 } from "react-native";
 import { useAuth } from "../context/AuthContext";
 
-// Función para obtener la URL base
+
 const getBaseUrl = () => {
   const localIp = "186.1.185.15"; 
   const localhostUrl = "http://localhost/barberapp/api/usuarios";

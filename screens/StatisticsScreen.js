@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { View, Text, StyleSheet, FlatList } from "react-native";
-import { Ionicons } from "@expo/vector-icons"; // Asegúrate de tener instalado @expo/vector-icons
+import { Ionicons } from "@expo/vector-icons"; 
 import { TouchableOpacity } from "react-native";
 
 

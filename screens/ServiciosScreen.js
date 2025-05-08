@@ -116,7 +116,7 @@ export default function ServiciosScreen() {
       return;
     }
   
-    setStep('time'); // Cambiar al paso de selección de hora
+    setStep('time'); 
   };
 
 
@@ -206,11 +206,11 @@ export default function ServiciosScreen() {
           {step === "date" && (
             <DateTimePicker
               value={fechaAgendada}
-              mode="date" // Modo fecha
+              mode="date" 
               display={Platform.OS === "ios" ? "spinner" : "default"}
               onChange={onChangePicker}
-              minimumDate={new Date()} // No permite seleccionar fechas pasadas
-              maximumDate={getMaxDate()} // Permite seleccionar hasta 30 días en el futuro
+              minimumDate={new Date()} 
+              maximumDate={getMaxDate()} 
             />
           )}
           {/* Renderiza el picker de hora si step es 'time' */}
@@ -269,7 +269,7 @@ export default function ServiciosScreen() {
             onPress={() => {
               setMostrarPicker(false);
               setServicioSeleccionado(null);
-              setStep(null); // Reinicia el paso al cancelar
+              setStep(null); 
             }}
             style={style.botonCancelar}
           >

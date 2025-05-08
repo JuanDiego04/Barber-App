@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, ImageBackground, Platform } from 'react-native'; // Asegúrate de que Platform esté importado
 
-// Función para obtener la URL base
+
 const getBaseUrl = () => {
   const localIp = "186.1.185.15"; 
   const localhostUrl = "http://localhost/barberapp/api/usuarios";

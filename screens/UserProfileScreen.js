@@ -116,8 +116,8 @@ export default function UserProfileScreen() {
         },
         body: JSON.stringify({
           id: user.id,
-          password: currentPassword,  // Contraseña actual
-          newPassword: newPassword,   // Nueva contraseña
+          password: currentPassword,  
+          newPassword: newPassword,   
         }),
       });
   
