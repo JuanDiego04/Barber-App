@@ -60,16 +60,34 @@ export default function UserProfileScreen() {
       Alert.alert('Error', 'Todos los campos son obligatorios.');
       return;
     }
-
+  
     try {
-      const updatedUser = { ...user, nombre: newName, email: newEmail };
-      await AsyncStorage.setItem('user', JSON.stringify(updatedUser));
-      setUser(updatedUser);
-      setIsEditing(false);
-      Alert.alert('Perfil actualizado', 'Tus datos han sido actualizados correctamente.');
+      const response = await fetch('http://localhost/barberapp/api/usuarios/actualizar.php', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          id: user.id,
+          nombre: newName,
+          email: newEmail,
+        }),
+      });
+  
+      const data = await response.json();
+  
+      if (response.ok) {
+        const updatedUser = { ...user, nombre: newName, email: newEmail };
+        await AsyncStorage.setItem('user', JSON.stringify(updatedUser));
+        setUser(updatedUser);
+        setIsEditing(false);
+        Alert.alert('Perfil actualizado', data.mensaje);
+      } else {
+        Alert.alert('Error', data.mensaje || 'No se pudo actualizar el perfil.');
+      }
     } catch (error) {
       console.error('Error al actualizar el perfil:', error);
-      Alert.alert('Error', 'No se pudo actualizar el perfil.');
+      Alert.alert('Error', 'No se pudo conectar con el servidor.');
     }
   };
 
@@ -78,21 +96,45 @@ export default function UserProfileScreen() {
       Alert.alert('Error', 'Todos los campos son obligatorios.');
       return;
     }
-
-    if (currentPassword !== user.password) {
-      Alert.alert('Error', 'La contraseña actual no es correcta.');
+  
+    if (currentPassword === newPassword) {
+      Alert.alert('Error', 'La nueva contraseña no puede ser igual a la actual.');
       return;
     }
-
+  
+    console.log('Datos enviados:', {
+      id: user.id,
+      password: currentPassword,
+      newPassword: newPassword
+    });
+  
     try {
-      const updatedUser = { ...user, password: newPassword };
-      await AsyncStorage.setItem('user', JSON.stringify(updatedUser));
-      setUser(updatedUser);
-      setIsChangingPassword(false);
-      Alert.alert('Contraseña actualizada', 'Tu contraseña ha sido actualizada correctamente.');
+      const response = await fetch('http://localhost/barberapp/api/usuarios/cambiarcontrasena.php', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          id: user.id,
+          password: currentPassword,  // Contraseña actual
+          newPassword: newPassword,   // Nueva contraseña
+        }),
+      });
+  
+      const data = await response.json();
+  
+      if (response.ok) {
+        const updatedUser = { ...user, password: newPassword };
+        await AsyncStorage.setItem('user', JSON.stringify(updatedUser));
+        setUser(updatedUser);
+        setIsChangingPassword(false);
+        Alert.alert('Contraseña actualizada', data.mensaje);
+      } else {
+        Alert.alert('Error', data.mensaje || 'No se pudo actualizar la contraseña.');
+      }
     } catch (error) {
       console.error('Error al cambiar la contraseña:', error);
-      Alert.alert('Error', 'No se pudo cambiar la contraseña.');
+      Alert.alert('Error', 'No se pudo conectar con el servidor.');
     }
   };
 

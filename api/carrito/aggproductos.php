@@ -1,4 +1,15 @@
 <?php
+// Cabeceras CORS para permitir el acceso desde tu app móvil
+header("Access-Control-Allow-Origin: *");
+header("Access-Control-Allow-Methods: POST, GET, OPTIONS");
+header("Access-Control-Allow-Headers: Content-Type");
+
+
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+    http_response_code(200);
+    exit;
+}
+
 require_once '../config/conexion.php';
 
 $data = json_decode(file_get_contents("php://input"));
@@ -35,28 +46,31 @@ try {
     if ($carritoExistente) {
         // Ya existe, sumar cantidades y recalcular precio total
         $nuevaCantidad = $carritoExistente['cantidad'] + $cantidad;
-        $totalProducto = $nuevaCantidad * $precio;  // Precio total de este producto
+        $totalProducto = $nuevaCantidad * $precio;
 
         // Actualizar carrito con la nueva cantidad y precio total
         $stmt = $pdo->prepare("UPDATE carrito SET cantidad = ?, precio = ? WHERE id = ?");
         $stmt->execute([$nuevaCantidad, $totalProducto, $carritoExistente['id']]);
 
-        echo json_encode(["mensaje" => "Cantidad de producto actualizada en el carrito."]);
+        $mensaje = "Cantidad de producto actualizada en el carrito.";
     } else {
         // No existe, insertar nuevo
-        $totalProducto = $cantidad * $precio; // Precio total del producto
+        $totalProducto = $cantidad * $precio;
         $stmt = $pdo->prepare("INSERT INTO carrito (usuarioId, itemId, cantidad, precio, tipo) VALUES (?, ?, ?, ?, 'producto')");
         $stmt->execute([$usuarioId, $productoId, $cantidad, $totalProducto]);
 
-        echo json_encode(["mensaje" => "Producto agregado al carrito."]);
+        $mensaje = "Producto agregado al carrito.";
     }
 
-    // Calcular el total general (productos y servicios)
+    // Calcular el total general
     $stmt = $pdo->prepare("SELECT SUM(precio) AS total FROM carrito WHERE usuarioId = ?");
     $stmt->execute([$usuarioId]);
     $totalGeneral = $stmt->fetch(PDO::FETCH_ASSOC)['total'];
 
-    echo json_encode(["mensaje" => "Producto agregado al carrito.", "totalGeneral" => $totalGeneral]);
+    echo json_encode([
+        "mensaje" => $mensaje,
+        "totalGeneral" => $totalGeneral
+    ]);
 
 } catch (PDOException $e) {
     http_response_code(500);

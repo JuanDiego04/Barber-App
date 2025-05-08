@@ -34,7 +34,7 @@ export default function ServicioCard({
   const toggleExpandir = () => {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
 
-    // Animar la imagen al expandir
+
     Animated.timing(imagenAnimada, {
       toValue: expandido ? 160 : 450,
       duration: 300,
@@ -51,13 +51,13 @@ export default function ServicioCard({
       const historial = historialActual ? JSON.parse(historialActual) : [];
       historial.push(item);
       await AsyncStorage.setItem("historial", JSON.stringify(historial));
-      console.log("Reserva guardada en el historial:", item); // Debug
+      console.log("Reserva guardada en el historial:", item); 
     } catch (error) {
       console.error("Error al guardar en el historial:", error);
     }
   };
 
-  // Función para manejar la acción de agendar
+  // acción de agendar
   const handleAgendar = () => {
     const fechaActual = new Date();
     const reserva = {
@@ -68,12 +68,12 @@ export default function ServicioCard({
         year: "numeric",
         month: "long",
         day: "numeric",
-      }), // Fecha legible
+      }), 
       hora: fechaActual.toLocaleTimeString("es-ES", {
         hour: "2-digit",
         minute: "2-digit",
         hour12: true,
-      }), // Hora legible
+      }), 
     };
     onAgendar(reserva);
     guardarEnHistorial(reserva);
@@ -103,17 +103,7 @@ export default function ServicioCard({
             {descripcionDetallada}
           </Text>
         )}
-        <TouchableOpacity
-          style={styles.botonReservar}
-          onPress={() => {
-            const compra = { id, nombre: titulo, precio };
-            onReservar(compra);
-            guardarEnHistorial(compra); // Guardar en el historial
-          }}
-        >
-          <Text style={styles.textBoton}>Comprar</Text>
-        </TouchableOpacity>
-
+      
         <TouchableOpacity style={styles.botonAgendar} onPress={handleAgendar}>
           <Text style={styles.textBotonAgendar}>Agendar Cita</Text>
         </TouchableOpacity>

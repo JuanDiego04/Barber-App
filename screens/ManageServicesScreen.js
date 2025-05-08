@@ -2,11 +2,11 @@ import React, { useState } from 'react';
 import { View, Text, FlatList, TouchableOpacity, StyleSheet, Alert, Modal, TextInput } from 'react-native';
 import { Ionicons } from '@expo/vector-icons'; 
 
-// Datos simulados compartidos (puedes importarlos desde un archivo común)
+
 const serviciosIniciales = [
-  { id: '1', nombre: 'Corte de Cabello', descripcion: 'Corte clásico o moderno', precio: '$10' },
+  { id: '1', nombre: 'Corte de Cabello', descripcion: 'Corte clásico o moderno', precio: '$20' },
   { id: '2', nombre: 'Afeitado', descripcion: 'Afeitado con navaja y toalla caliente', precio: '$15' },
-  { id: '3', nombre: 'Limpieza facial', descripcion: 'Limpieza facial y exfoliaciones', precio: '$20' },
+  { id: '3', nombre: 'Limpieza facial', descripcion: 'Limpieza facial y exfoliaciones', precio: '$25' },
 ];
 
 export default function ManageServicesScreen({ navigation }) {

@@ -16,22 +16,10 @@ export default function ManageUsersScreen({ navigation }) {
   const [usuarios, setUsuarios] = useState([
     {
       id: "1",
-      nombre: "Juan Pérez",
-      email: "juan.perez@example.com",
-      telefono: "1234567890",
+      nombre: "user02",
+      email: "user02@ej.com",
     },
-    {
-      id: "2",
-      nombre: "María López",
-      email: "maria.lopez@example.com",
-      telefono: "0987654321",
-    },
-    {
-      id: "3",
-      nombre: "Carlos García",
-      email: "carlos.garcia@example.com",
-      telefono: "1122334455",
-    },
+
   ]);
 
   const [selectedUser, setSelectedUser] = useState(null);

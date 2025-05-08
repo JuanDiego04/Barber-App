@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 import {
   View,
   Text,
@@ -46,6 +48,7 @@ export default function LoginScreen({ navigation }) {
       const data = await response.json();
 
       if (response.ok) {
+        await AsyncStorage.setItem('user', JSON.stringify(data.usuario)); 
         login(data.usuario); // Pasa los datos del usuario al contexto
         Alert.alert("Inicio de sesión exitoso", `Bienvenido de nuevo, ${data.usuario.nombre}!`);
       } else {

@@ -31,14 +31,14 @@ export default function ServiciosScreen() {
   };
 
   const getBaseUrl = () => {
-    const localIp = "192.168.x.x"; // Reemplaza con la IP de tu máquina
+    const localIp = "192.168.x.x"; 
     const localhostUrl = "http://localhost/barberapp/api/servicios";
     const localIpUrl = `http://${localIp}/barberapp/api/servicios`;
 
     if (Platform.OS === "android") {
-      return localIpUrl; // Android no puede usar localhost
+      return localIpUrl; 
     }
-    return localhostUrl; // iOS o navegador pueden usar localhost
+    return localhostUrl; 
   };
 
   const fetchServicios = async () => {
@@ -49,10 +49,10 @@ export default function ServiciosScreen() {
       }
       const data = await response.json();
 
-      // Asigna las imágenes a los servicios
+    
       const serviciosConImagenes = data.map((servicio) => ({
         ...servicio,
-        imagen: imagenesServicios[servicio.nombre] || require("../assets/default.png"), // Usa una imagen por defecto si no hay mapeo
+        imagen: imagenesServicios[servicio.nombre] || require("../assets/default.png"), 
       }));
 
       setServicios(serviciosConImagenes);
@@ -79,45 +79,44 @@ export default function ServiciosScreen() {
   // Función para manejar el cambio en el DateTimePicker
   const onChangePicker = (event, selectedValue) => {
     if (event.type === 'dismissed') {
-      // Si el usuario cancela el picker nativo (ej. botón atrás en Android)
       setMostrarPicker(false);
       setServicioSeleccionado(null);
       setStep(null);
       return;
     }
-
+  
     const currentValue = selectedValue || fechaAgendada;
     setFechaAgendada(currentValue);
+  
     // Si estamos seleccionando la hora, cerrar el picker automáticamente
-     if (step === 'time') {
-      setMostrarPicker(false); 
+    if (step === 'time') {
+      setMostrarPicker(false);
     } else {
       setStep('time'); 
     }
-
   };
 
   // Función para pasar de la selección de fecha a la de hora
   const pasarASelccionHora = () => {
-      const ahora = new Date();
-      const hoySinHora = new Date(ahora.getFullYear(), ahora.getMonth(), ahora.getDate());
-      const fechaSeleccionadaSinHora = new Date(fechaAgendada.getFullYear(), fechaAgendada.getMonth(), fechaAgendada.getDate());
-
-      if (fechaSeleccionadaSinHora < hoySinHora) {
-          Alert.alert('Fecha inválida', 'No puedes agendar citas en el pasado.');
-          return;
-      }
-
-      const maxDate = new Date();
-      maxDate.setDate(maxDate.getDate() + 30);
-      maxDate.setHours(23, 59, 59, 999);
-
-      if (fechaAgendada > maxDate) {
-          Alert.alert('Fecha inválida', 'Solo puedes agendar citas hasta con 30 días de anticipación.');
-          return;
-      }
-
-      setStep('time');
+    const ahora = new Date();
+    const hoySinHora = new Date(ahora.getFullYear(), ahora.getMonth(), ahora.getDate());
+    const fechaSeleccionadaSinHora = new Date(fechaAgendada.getFullYear(), fechaAgendada.getMonth(), fechaAgendada.getDate());
+  
+    if (fechaSeleccionadaSinHora < hoySinHora) {
+      Alert.alert('Fecha inválida', 'No puedes agendar citas en el pasado.');
+      return;
+    }
+  
+    const maxDate = new Date();
+    maxDate.setDate(maxDate.getDate() + 30);
+    maxDate.setHours(23, 59, 59, 999);
+  
+    if (fechaAgendada > maxDate) {
+      Alert.alert('Fecha inválida', 'Solo puedes agendar citas hasta con 30 días de anticipación.');
+      return;
+    }
+  
+    setStep('time'); // Cambiar al paso de selección de hora
   };
 
 
@@ -127,24 +126,24 @@ export default function ServiciosScreen() {
       Alert.alert('Error', 'No se ha seleccionado un servicio o fecha/hora.');
       return;
     }
-
-    // Validación de Rango de Hora (7 AM a 11 PM) 
+  
+    // Validación de rango de hora (7 AM a 11 PM)
     const hours = fechaAgendada.getHours();
     if (hours < 7 || hours > 23) {
-        Alert.alert('Hora inválida', 'Por favor, selecciona una hora entre las 7 AM y las 11 PM.');
-        return; 
+      Alert.alert('Hora inválida', 'Por favor, selecciona una hora entre las 7 AM y las 11 PM.');
+      return;
     }
-
-    // Si todas las validaciones son exitosas, muestra la alerta de confirmación 
+  
+    // Si todas las validaciones son exitosas, muestra la alerta de confirmación
     Alert.alert(
       'Cita Agendada',
       `Tu cita para "${servicioSeleccionado.nombre}" ha sido agendada para:\n${fechaAgendada.toLocaleString('es-ES', {
-          year: 'numeric',
-          month: 'long',
-          day: 'numeric',
-          hour: '2-digit',
-          minute: '2-digit',
-          hour12: true, 
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: true,
       })}`,
       [
         {
@@ -195,70 +194,89 @@ export default function ServiciosScreen() {
       {/* Renderiza el panel de selección condicionalmente */}
       {mostrarPicker && (
         <View style={style.pickerContainer}>
-           <Text style={style.pickerTitle}>
-             {step === 'date' ? 'Selecciona la fecha' : 'Selecciona la hora'} para:
-           </Text>
-           <Text style={style.servicioNombre}>{servicioSeleccionado?.nombre}</Text>
+          <Text style={style.pickerTitle}>
+            {step === "date" ? "Selecciona la fecha" : "Selecciona la hora"}{" "}
+            para:
+          </Text>
+          <Text style={style.servicioNombre}>
+            {servicioSeleccionado?.nombre}
+          </Text>
 
-           {/* Renderiza el picker de fecha si step es 'date' */}
-           {step === 'date' && (
-             <DateTimePicker
-               value={fechaAgendada}
-               mode="date" // Modo fecha
-               display={Platform.OS === 'ios' ? 'spinner' : 'default'}
-               onChange={onChangePicker}
-               minimumDate={new Date()} 
-               maximumDate={getMaxDate()} 
-             />
-           )}
+          {/* Renderiza el picker de fecha si step es 'date' */}
+          {step === "date" && (
+            <DateTimePicker
+              value={fechaAgendada}
+              mode="date" // Modo fecha
+              display={Platform.OS === "ios" ? "spinner" : "default"}
+              onChange={onChangePicker}
+              minimumDate={new Date()} // No permite seleccionar fechas pasadas
+              maximumDate={getMaxDate()} // Permite seleccionar hasta 30 días en el futuro
+            />
+          )}
+          {/* Renderiza el picker de hora si step es 'time' */}
+          {step === "time" && (
+            <DateTimePicker
+              value={fechaAgendada}
+              mode="time" // Modo hora
+              display={Platform.OS === "ios" ? "spinner" : "default"}
+              onChange={onChangePicker}
+            />
+          )}
 
-           {/* Renderiza el picker de hora si step es 'time' */}
-           {step === 'time' && (
-             <DateTimePicker
-               value={fechaAgendada} 
-               mode="time" 
-               display={Platform.OS === 'ios' ? 'spinner' : 'default'}
-               onChange={onChangePicker}
-             />
-           )}
+          {/* Muestra la fecha y hora seleccionadas */}
+          {step === "time" && (
+            <>
+              <Text style={style.fechaSeleccionadaTexto}>
+                Fecha:{" "}
+                {fechaAgendada.toLocaleDateString("es-ES", {
+                  year: "numeric",
+                  month: "long",
+                  day: "numeric",
+                })}
+              </Text>
+              <Text style={style.horaSeleccionadaTexto}>
+                Hora:{" "}
+                {fechaAgendada.toLocaleTimeString("es-ES", {
+                  hour: "2-digit",
+                  minute: "2-digit",
+                  hour12: true,
+                })}
+              </Text>
+            </>
+          )}
 
-            {/* Muestra la fecha y hora seleccionadas */}
-           {step === 'time' && (
-             <>
-                <Text style={style.fechaSeleccionadaTexto}>
-                   Fecha: {fechaAgendada.toLocaleDateString('es-ES', { year: 'numeric', month: 'long', day: 'numeric' })}
-                </Text>
-                 <Text style={style.horaSeleccionadaTexto}>
-                   Hora: {fechaAgendada.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit', hour12: true })}
-                </Text>
-             </>
-           )}
+          {/* Botones de navegación entre pasos y confirmar */}
+          {step === "date" && (
+            <TouchableOpacity
+              onPress={pasarASelccionHora}
+              style={style.botonConfirmarCita}
+            >
+              <Text style={style.textoBotonConfirmar}>Seleccionar Hora</Text>
+            </TouchableOpacity>
+          )}
 
+          {step === "time" && (
+            <TouchableOpacity
+              onPress={confirmarCita}
+              style={style.botonConfirmarCita}
+            >
+              <Text style={style.textoBotonConfirmar}>Confirmar Cita</Text>
+            </TouchableOpacity>
+          )}
 
-           {/* Botones de navegación entre pasos y confirmar */}
-           {step === 'date' && (
-               <TouchableOpacity onPress={pasarASelccionHora} style={style.botonConfirmarCita}>
-                 <Text style={style.textoBotonConfirmar}>Seleccionar Hora</Text>
-               </TouchableOpacity>
-           )}
-
-           {step === 'time' && (
-               <TouchableOpacity onPress={confirmarCita} style={style.botonConfirmarCita}>
-                 <Text style={style.textoBotonConfirmar}>Confirmar Cita</Text>
-               </TouchableOpacity>
-           )}
-
-           {/* Botón para cancelar */}
-           <TouchableOpacity onPress={() => {
+          {/* Botón para cancelar */}
+          <TouchableOpacity
+            onPress={() => {
               setMostrarPicker(false);
               setServicioSeleccionado(null);
               setStep(null); // Reinicia el paso al cancelar
-           }} style={style.botonCancelar}>
-             <Text style={style.textoBotonCancelar}>Cancelar</Text>
-           </TouchableOpacity>
+            }}
+            style={style.botonCancelar}
+          >
+            <Text style={style.textoBotonCancelar}>Cancelar</Text>
+          </TouchableOpacity>
         </View>
       )}
-
     </View>
   );
 }
