@@ -1,6 +1,30 @@
 <?php
 require_once '../config/conexion.php';
 
+// Lista de orígenes permitidos
+$allowedOrigins = [
+    "http://localhost:8081",
+    "http://186.1.185.15" 
+];
+
+// Obtener el origen de la solicitud
+$origin = $_SERVER['HTTP_ORIGIN'] ?? '';
+
+// Verificar si el origen está en la lista permitida
+if (in_array($origin, $allowedOrigins)) {
+    header("Access-Control-Allow-Origin: $origin");
+    header("Access-Control-Allow-Credentials: true");
+}
+
+header("Access-Control-Allow-Methods: POST, OPTIONS");
+header("Access-Control-Allow-Headers: Content-Type, Authorization");
+
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+    // Manejo de solicitudes preflight
+    http_response_code(200);
+    exit;
+}
+
 // Capturar el contenido bruto del cuerpo
 $dataRaw = file_get_contents("php://input");
 

@@ -1,5 +1,17 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, ImageBackground } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, ImageBackground, Platform } from 'react-native'; // Asegúrate de que Platform esté importado
+
+// Función para obtener la URL base
+const getBaseUrl = () => {
+  const localIp = "186.1.185.15"; // Reemplaza con la IP de tu máquina
+  const localhostUrl = "http://localhost/barberapp/api/usuarios";
+  const localIpUrl = `http://${localIp}/barberapp/api/usuarios`;
+
+  if (Platform.OS === "android") {
+    return localIpUrl; // Android no puede usar localhost
+  }
+  return localhostUrl; // iOS o navegador pueden usar localhost
+};
 
 export default function RegisterScreen({ navigation }) {
   const [name, setName] = useState('');
@@ -7,7 +19,7 @@ export default function RegisterScreen({ navigation }) {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
 
-  const handleRegister = () => {
+  const handleRegister = async () => {
     if (!name || !email || !password || !confirmPassword) {
       Alert.alert('Error', 'Todos los campos son obligatorios.');
       return;
@@ -18,9 +30,31 @@ export default function RegisterScreen({ navigation }) {
       return;
     }
 
-    // Simular registro exitoso
-    Alert.alert('Registro exitoso', '¡Tu cuenta ha sido creada con éxito!');
-    navigation.navigate('Login'); 
+    try {
+      const response = await fetch(`${getBaseUrl()}/registro.php`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          nombre: name,
+          email: email,
+          password: password,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        Alert.alert('Registro exitoso', '¡Tu cuenta ha sido creada con éxito!');
+        navigation.navigate('Login');
+      } else {
+        Alert.alert('Error', data.mensaje || 'Error al registrar el usuario.');
+      }
+    } catch (error) {
+      console.error('Error al registrar el usuario:', error);
+      Alert.alert('Error', 'No se pudo conectar con el servidor.');
+    }
   };
 
   return (

@@ -1,11 +1,24 @@
 <?php
 require_once '../config/conexion.php';
 
-// Configuración de CORS
-header("Access-Control-Allow-Origin: http://localhost:8081"); // Cambia esto al origen de tu frontend
+// Lista de orígenes permitidos
+$allowedOrigins = [
+    "http://localhost:8081", // Origen del frontend en localhost
+    "http://186.1.185.15" // Reemplaza con la IP local de tu máquina
+];
+
+// Obtener el origen de la solicitud
+$origin = $_SERVER['HTTP_ORIGIN'] ?? '';
+
+// Verificar si el origen está en la lista permitida
+if (in_array($origin, $allowedOrigins)) {
+    header("Access-Control-Allow-Origin: $origin");
+    header("Access-Control-Allow-Credentials: true");
+}
+
 header("Access-Control-Allow-Methods: POST, OPTIONS");
 header("Access-Control-Allow-Headers: Content-Type, Authorization");
-header("Access-Control-Allow-Credentials: true");
+
 
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     // Manejo de solicitudes preflight

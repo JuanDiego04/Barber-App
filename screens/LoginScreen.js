@@ -7,8 +7,21 @@ import {
   StyleSheet,
   Alert,
   ImageBackground,
+  Platform, // Asegúrate de importar Platform
 } from "react-native";
 import { useAuth } from "../context/AuthContext";
+
+// Función para obtener la URL base
+const getBaseUrl = () => {
+  const localIp = "186.1.185.15"; // Reemplaza con la IP de tu máquina
+  const localhostUrl = "http://localhost/barberapp/api/usuarios";
+  const localIpUrl = `http://${localIp}/barberapp/api/usuarios`;
+
+  if (Platform.OS === "android") {
+    return localIpUrl; // Android no puede usar localhost
+  }
+  return localhostUrl; // iOS o navegador pueden usar localhost
+};
 
 export default function LoginScreen({ navigation }) {
   const { login } = useAuth();
@@ -20,18 +33,18 @@ export default function LoginScreen({ navigation }) {
       Alert.alert("Error", "Todos los campos son obligatorios.");
       return;
     }
-  
+
     try {
-      const response = await fetch("http://localhost/barberapp/api/usuarios/login.php", {
+      const response = await fetch(`${getBaseUrl()}/login.php`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({ email, password }),
       });
-  
+
       const data = await response.json();
-  
+
       if (response.ok) {
         login(data.usuario); // Pasa los datos del usuario al contexto
         Alert.alert("Inicio de sesión exitoso", `Bienvenido de nuevo, ${data.usuario.nombre}!`);
@@ -46,7 +59,7 @@ export default function LoginScreen({ navigation }) {
 
   return (
     <ImageBackground
-      source={require("../assets/login.jpg")} 
+      source={require("../assets/login.jpg")}
       style={styles.background}
     >
       <View style={styles.overlay}>
