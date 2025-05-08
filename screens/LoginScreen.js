@@ -15,15 +15,33 @@ export default function LoginScreen({ navigation }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleLogin = () => {
+  const handleLogin = async () => {
     if (!email || !password) {
       Alert.alert("Error", "Todos los campos son obligatorios.");
       return;
     }
-
-    // Simular inicio de sesión exitoso
-    login();
-    Alert.alert("Inicio de sesión exitoso", "Bienvenido de nuevo!");
+  
+    try {
+      const response = await fetch("http://localhost/barberapp/api/usuarios/login.php", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, password }),
+      });
+  
+      const data = await response.json();
+  
+      if (response.ok) {
+        login(data.usuario); // Pasa los datos del usuario al contexto
+        Alert.alert("Inicio de sesión exitoso", `Bienvenido de nuevo, ${data.usuario.nombre}!`);
+      } else {
+        Alert.alert("Error", data.mensaje || "Error al iniciar sesión.");
+      }
+    } catch (error) {
+      console.error("Error al iniciar sesión:", error);
+      Alert.alert("Error", "No se pudo conectar con el servidor.");
+    }
   };
 
   return (

@@ -6,6 +6,10 @@ import {
   TouchableOpacity,
   Alert,
   TextInput,
+  KeyboardAvoidingView,
+  Platform,
+  Keyboard,
+  TouchableWithoutFeedback,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 
@@ -17,6 +21,10 @@ const PagoScreen = ({ route, navigation }) => {
   const [numeroTarjeta, setNumeroTarjeta] = useState("");
   const [fechaExpiracion, setFechaExpiracion] = useState("");
   const [cvv, setCvv] = useState("");
+  const [direccion, setDireccion] = useState("");
+  const [recogerEnTienda, setRecogerEnTienda] = useState(false);
+  const [telefono, setTelefono] = useState("");
+  const [notas, setNotas] = useState("");
 
   // Asegurarse de que el total sea un número
   const totalNumerico =
@@ -39,6 +47,19 @@ const PagoScreen = ({ route, navigation }) => {
       return;
     }
 
+    if (!recogerEnTienda && !direccion) {
+      Alert.alert("Error", "Por favor, ingresa una dirección o selecciona recoger en tienda.");
+      return;
+    }
+
+    const detallesCompra = {
+      metodoPago,
+      direccion: recogerEnTienda ? "Recoger en tienda" : direccion,
+      telefono,
+      notas,
+    };
+
+    console.log("Detalles de la compra:", detallesCompra);
     Alert.alert(
       "Pago Confirmado",
       `Has pagado $${totalNumerico.toFixed(2)} usando ${metodoPago}. ¡Gracias por tu compra!`,
@@ -57,96 +78,132 @@ const PagoScreen = ({ route, navigation }) => {
   };
 
   return (
-    <View style={styles.container}>
-      {/* Header */}
-      <View style={styles.header}>
-        <TouchableOpacity
-          onPress={() => navigation.goBack()}
-          style={styles.backButton}
-        >
-          <Ionicons name="arrow-back" size={24} color="#DAA520" />
-        </TouchableOpacity>
-        <Text style={styles.headerTitle}>Pago</Text>
-      </View>
+    <KeyboardAvoidingView
+      style={{ flex: 1 }}
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+    >
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+        <View style={styles.container}>
+          {/* Header */}
+          <View style={styles.header}>
+            <TouchableOpacity
+              onPress={() => navigation.goBack()}
+              style={styles.backButton}
+            >
+              <Ionicons name="arrow-back" size={24} color="#DAA520" />
+            </TouchableOpacity>
+            <Text style={styles.headerTitle}>Pago</Text>
+          </View>
 
-      {/* Total */}
-      <Text style={styles.totalText}>Total: ${totalNumerico.toFixed(2)}</Text>
+          {/* Total */}
+          <Text style={styles.totalText}>Total: ${totalNumerico.toFixed(2)}</Text>
 
-      {/* Métodos de pago */}
-      <TouchableOpacity
-        style={[
-          styles.paymentOption,
-          metodoPago === "Tarjeta de Crédito" && styles.selectedOption,
-        ]}
-        onPress={() => handleSeleccionarMetodoPago("Tarjeta de Crédito")}
-      >
-        <Text style={styles.paymentText}>Tarjeta de Crédito</Text>
-      </TouchableOpacity>
+          {/* Dirección */}
+          {!recogerEnTienda && (
+            <TextInput
+              style={styles.input}
+              placeholder="Dirección de envío"
+              value={direccion}
+              onChangeText={setDireccion}
+            />
+          )}
 
-      <TouchableOpacity
-        style={[
-          styles.paymentOption,
-          metodoPago === "PayPal" && styles.selectedOption,
-        ]}
-        onPress={() => handleSeleccionarMetodoPago("PayPal")}
-      >
-        <Text style={styles.paymentText}>PayPal</Text>
-      </TouchableOpacity>
+          {/* Recoger en tienda */}
+          <TouchableOpacity
+            style={styles.checkboxContainer}
+            onPress={() => setRecogerEnTienda(!recogerEnTienda)}
+          >
+            <View
+              style={[styles.checkbox, recogerEnTienda && styles.checkboxChecked]}
+            />
+            <Text style={styles.checkboxLabel}>Recoger en tienda física</Text>
+          </TouchableOpacity>
 
-      <TouchableOpacity
-        style={[
-          styles.paymentOption,
-          metodoPago === "Efectivo" && styles.selectedOption,
-        ]}
-        onPress={() => handleSeleccionarMetodoPago("Efectivo")}
-      >
-        <Text style={styles.paymentText}>Efectivo</Text>
-      </TouchableOpacity>
-
-      {/* Formulario para tarjeta de crédito */}
-      {mostrarFormularioTarjeta && (
-        <View style={styles.cardForm}>
+          {/* Teléfono */}
           <TextInput
             style={styles.input}
-            placeholder="Número de Tarjeta"
-            keyboardType="numeric"
-            value={numeroTarjeta}
-            onChangeText={setNumeroTarjeta}
+            placeholder="Teléfono de contacto"
+            keyboardType="phone-pad"
+            value={telefono}
+            onChangeText={setTelefono}
           />
+
+          {/* Notas adicionales */}
           <TextInput
-            style={styles.input}
-            placeholder="Fecha de Expiración (MM/AA)"
-            keyboardType="numeric"
-            value={fechaExpiracion}
-            onChangeText={setFechaExpiracion}
+            style={[styles.input, styles.textArea]}
+            placeholder="Notas adicionales (opcional)"
+            value={notas}
+            onChangeText={setNotas}
+            multiline
           />
-          <TextInput
-            style={styles.input}
-            placeholder="CVV"
-            keyboardType="numeric"
-            secureTextEntry
-            value={cvv}
-            onChangeText={setCvv}
-          />
+
+          {/* Métodos de pago */}
+          <TouchableOpacity
+            style={[
+              styles.paymentOption,
+              metodoPago === "Tarjeta de Crédito" && styles.selectedOption,
+            ]}
+            onPress={() => handleSeleccionarMetodoPago("Tarjeta de Crédito")}
+          >
+            <Text style={styles.paymentText}>Tarjeta de Crédito</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={[
+              styles.paymentOption,
+              metodoPago === "PayPal" && styles.selectedOption,
+            ]}
+            onPress={() => handleSeleccionarMetodoPago("PayPal")}
+          >
+            <Text style={styles.paymentText}>PayPal</Text>
+          </TouchableOpacity>
+
+          {/* Formulario para tarjeta de crédito */}
+          {mostrarFormularioTarjeta && (
+            <View style={styles.cardForm}>
+              <TextInput
+                style={styles.input}
+                placeholder="Número de Tarjeta"
+                keyboardType="numeric"
+                value={numeroTarjeta}
+                onChangeText={setNumeroTarjeta}
+              />
+              <TextInput
+                style={styles.input}
+                placeholder="Fecha de Expiración (MM/AA)"
+                keyboardType="numeric"
+                value={fechaExpiracion}
+                onChangeText={setFechaExpiracion}
+              />
+              <TextInput
+                style={styles.input}
+                placeholder="CVV"
+                keyboardType="numeric"
+                secureTextEntry
+                value={cvv}
+                onChangeText={setCvv}
+              />
+            </View>
+          )}
+
+          {/* Botones de acción */}
+          <View style={styles.buttonContainer}>
+            <TouchableOpacity
+              style={styles.cancelButton}
+              onPress={() => navigation.goBack()}
+            >
+              <Text style={styles.cancelButtonText}>Cancelar</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.confirmButton}
+              onPress={handleConfirmarPago}
+            >
+              <Text style={styles.confirmButtonText}>Confirmar Compra</Text>
+            </TouchableOpacity>
+          </View>
         </View>
-      )}
-
-      {/* Botones de acción */}
-      <View style={styles.buttonContainer}>
-        <TouchableOpacity
-          style={styles.cancelButton}
-          onPress={() => navigation.goBack()}
-        >
-          <Text style={styles.cancelButtonText}>Cancelar</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.confirmButton}
-          onPress={handleConfirmarPago}
-        >
-          <Text style={styles.confirmButtonText}>Confirmar Compra</Text>
-        </TouchableOpacity>
-      </View>
-    </View>
+      </TouchableWithoutFeedback>
+    </KeyboardAvoidingView>
   );
 };
 
@@ -165,11 +222,13 @@ const styles = StyleSheet.create({
   },
   backButton: {
     marginRight: 10,
+    marginTop: 20,
   },
   headerTitle: {
     fontSize: 24,
     fontWeight: "bold",
     color: "#DAA520",
+    top: 10,
   },
   totalText: {
     fontSize: 20,
@@ -201,6 +260,30 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 5,
     marginBottom: 10,
+  },
+  textArea: {
+    height: 80,
+    textAlignVertical: "top",
+  },
+  checkboxContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 15,
+  },
+  checkbox: {
+    width: 20,
+    height: 20,
+    borderWidth: 1,
+    borderColor: "#ccc",
+    borderRadius: 3,
+    marginRight: 10,
+  },
+  checkboxChecked: {
+    backgroundColor: "#28a745",
+  },
+  checkboxLabel: {
+    fontSize: 16,
+    color: "#fff",
   },
   buttonContainer: {
     flexDirection: "row",

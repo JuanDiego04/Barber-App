@@ -5,17 +5,20 @@ const AuthContext = createContext();
 // Proveedor del contexto de autenticación
 export function AuthProvider({ children }) {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [user, setUser] = useState(null); // Estado para almacenar los datos del usuario
 
-  const login = () => {
+  const login = (userData) => {
     setIsAuthenticated(true);
+    setUser(userData); // Almacena los datos del usuario autenticado
   };
 
   const logout = () => {
     setIsAuthenticated(false);
+    setUser(null); // Limpia los datos del usuario al cerrar sesión
   };
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, login, logout }}>
+    <AuthContext.Provider value={{ isAuthenticated, user, login, logout }}>
       {children}
     </AuthContext.Provider>
   );

@@ -8,25 +8,14 @@ import {
   Platform,
   UIManager,
   StyleSheet,
-  TextInput,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Formik } from "formik";
-import * as Yup from "yup";
-import AsyncStorage from "@react-native-async-storage/async-storage"; // Importar AsyncStorage
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 if (Platform.OS === "android") {
   UIManager.setLayoutAnimationEnabledExperimental &&
     UIManager.setLayoutAnimationEnabledExperimental(true);
 }
-
-// Esquema de validación con Yup
-const validationSchema = Yup.object().shape({
-  nombre: Yup.string().required("El nombre es obligatorio"),
-  correo: Yup.string()
-    .email("Correo inválido")
-    .required("El correo es obligatorio"),
-});
 
 export default function ServicioCard({
   titulo,
@@ -40,7 +29,6 @@ export default function ServicioCard({
   precio,
 }) {
   const [expandido, setExpandido] = useState(false);
-  const [mostrarFormulario, setMostrarFormulario] = useState(false);
   const imagenAnimada = useRef(new Animated.Value(160)).current;
 
   const toggleExpandir = () => {
@@ -63,9 +51,32 @@ export default function ServicioCard({
       const historial = historialActual ? JSON.parse(historialActual) : [];
       historial.push(item);
       await AsyncStorage.setItem("historial", JSON.stringify(historial));
+      console.log("Reserva guardada en el historial:", item); // Debug
     } catch (error) {
       console.error("Error al guardar en el historial:", error);
     }
+  };
+
+  // Función para manejar la acción de agendar
+  const handleAgendar = () => {
+    const fechaActual = new Date();
+    const reserva = {
+      id,
+      nombre: titulo,
+      precio,
+      fecha: fechaActual.toLocaleDateString("es-ES", {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+      }), // Fecha legible
+      hora: fechaActual.toLocaleTimeString("es-ES", {
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: true,
+      }), // Hora legible
+    };
+    onAgendar(reserva);
+    guardarEnHistorial(reserva);
   };
 
   return (
@@ -103,68 +114,10 @@ export default function ServicioCard({
           <Text style={styles.textBoton}>Comprar</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity
-          style={styles.botonAgendar}
-          onPress={() => setMostrarFormulario(!mostrarFormulario)}
-        >
+        <TouchableOpacity style={styles.botonAgendar} onPress={handleAgendar}>
           <Text style={styles.textBotonAgendar}>Agendar Cita</Text>
         </TouchableOpacity>
       </TouchableOpacity>
-
-      {/* Formulario para agendar cita */}
-      {mostrarFormulario && (
-        <Formik
-          initialValues={{ nombre: "", correo: "", fecha: "" }}
-          validationSchema={validationSchema}
-          onSubmit={(values) => {
-            const reserva = { id, nombre: titulo, precio, ...values };
-            onAgendar(reserva);
-            guardarEnHistorial(reserva); // Guardar en el historial
-            setMostrarFormulario(false); // Ocultar formulario después de enviar
-          }}
-        >
-          {({
-            handleChange,
-            handleBlur,
-            handleSubmit,
-            values,
-            errors,
-            touched,
-          }) => (
-            <View style={styles.formulario}>
-              <TextInput
-                style={styles.input}
-                placeholder="Nombre"
-                onChangeText={handleChange("nombre")}
-                onBlur={handleBlur("nombre")}
-                value={values.nombre}
-              />
-              {touched.nombre && errors.nombre && (
-                <Text style={styles.errorTexto}>{errors.nombre}</Text>
-              )}
-
-              <TextInput
-                style={styles.input}
-                placeholder="Correo electrónico"
-                keyboardType="email-address"
-                onChangeText={handleChange("correo")}
-                onBlur={handleBlur("correo")}
-                value={values.correo}
-              />
-              {touched.correo && errors.correo && (
-                <Text style={styles.errorTexto}>{errors.correo}</Text>
-              )}
-
-              <TouchableOpacity
-                style={styles.botonEnviar}
-                onPress={handleSubmit}
-              >
-                <Text style={styles.textBoton}>Enviar</Text>
-              </TouchableOpacity>
-            </View>
-          )}
-        </Formik>
-      )}
     </SafeAreaView>
   );
 }
@@ -230,30 +183,5 @@ const styles = StyleSheet.create({
     color: "#fff",
     fontWeight: "bold",
     textAlign: "center",
-  },
-  formulario: {
-    backgroundColor: "#f5f5f5",
-    padding: 15,
-    borderRadius: 10,
-    marginTop: 10,
-  },
-  input: {
-    borderWidth: 1,
-    borderColor: "#ccc",
-    borderRadius: 5,
-    padding: 10,
-    marginBottom: 10,
-    backgroundColor: "#fff",
-  },
-  errorTexto: {
-    color: "#dc3545",
-    fontSize: 12,
-    marginBottom: 10,
-  },
-  botonEnviar: {
-    backgroundColor: "#0077b6",
-    paddingVertical: 10,
-    borderRadius: 5,
-    alignItems: "center",
   },
 });
