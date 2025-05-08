@@ -4,7 +4,6 @@ header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Methods: POST, OPTIONS"); 
 header("Access-Control-Allow-Headers: Content-Type"); 
 
-// Si la solicitud es una pre-solicitud (OPTIONS), responder con OK
 if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
     http_response_code(200);
     exit;

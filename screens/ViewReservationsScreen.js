@@ -15,7 +15,7 @@ const reservasIniciales = [
     cliente: "user02",
     servicio: "Corte basico",
     fecha: "2025-05-08",
-    hora: "10:00 AM",
+    hora: "11:00 AM",
   },
 
 ];
@@ -44,7 +44,7 @@ export default function ViewReservationsScreen({ navigation }) {
 
   return (
     <View style={styles.container}>
-      {/* Botón para regresar al Panel de Administración */}
+  
       <TouchableOpacity
         style={styles.backButton}
         onPress={() => navigation.goBack("AdminDashboard")}
