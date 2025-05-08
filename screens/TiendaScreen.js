@@ -1,83 +1,87 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   FlatList,
   StyleSheet,
   Text,
-  Image,
-  TouchableOpacity,
+  Alert,
+  Platform, // Asegúrate de importar Platform
 } from "react-native";
 import ProductoCard from "../components/ProductoCard";
 
-const productos = [
-  {
-    id: "1",
-    nombre: "Aceite Grave",
-    precio: 22000,
-    descripcion:
-      "La crema o loción para barba ofrece excelentes propiedades hidratantes.",
-    imagen: require("../assets/aceitebarba.png"),
-    etiqueta: "🔥 Popular",
-  },
-  {
-    id: "2",
-    nombre: "Balsamo Grave",
-    precio: 24000,
-    descripcion:
-      "Esta mantequilla suaviza y moldea la barba, ejerciendo un efecto reparador.",
-    imagen: require("../assets/balsamo.png"),
-    etiqueta: "🧼 Nuevo",
-  },
-  {
-    id: "3",
-    nombre: "Minofoam",
-    precio: 42000,
-    descripcion:
-      "Es una espuma tópica que contiene minoxidil al 5%, utilizada para tratar la alopecia.",
-    imagen: require("../assets/minofoam.png"),
-    etiqueta: "⭐ Recomendado",
-  },
-  {
-    id: "4",
-    nombre: "Reelance Cejas",
-    precio: 25000,
-    descripcion:
-      "Tratamiento para estimular el crecimiento del vello en las cejas.",
-    imagen: require("../assets/reelancecejas.png"),
-    etiqueta: null,
-  },
-  {
-    id: "5",
-    nombre: "Reelance Capilar",
-    precio: 30000,
-    descripcion:
-      "Detiene la caída de cabello y estimula el crecimiento de cabello nuevo.",
-    imagen: require("../assets/reelance.png"),
-    etiqueta: null,
-  },
-];
+const imagenesProductos = {
+  "Aceite Grave": require("../assets/aceitebarba.png"),
+  "Balsamo Grave": require("../assets/balsamo.png"),
+  "Mimofoam": require("../assets/minofoam.png"),
+  "Reelance Cejas": require("../assets/reelancecejas.png"),
+  "Reelance Capilar": require("../assets/reelance.png"),
+};
 
 export default function TiendaScreen() {
+  const [productos, setProductos] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  const getBaseUrl = () => {
+    const localIp = "192.168.x.x"; // Reemplaza con la IP de tu máquina
+    const localhostUrl = "http://localhost/barberapp/api/productos";
+    const localIpUrl = `http://${localIp}/barberapp/api/productos`;
+
+    if (Platform.OS === "android") {
+      return localIpUrl;
+    }
+    return localhostUrl;
+  };
+
+  const fetchProductos = async () => {
+    try {
+      const response = await fetch(`${getBaseUrl()}/obtener.php`); // Método GET por defecto
+      if (!response.ok) {
+        throw new Error("Error al obtener los productos");
+      }
+      const data = await response.json();
+
+      const productosConImagenes = data.map((producto) => ({
+        ...producto,
+        imagen: imagenesProductos[producto.nombre] || require("../assets/default.png"),
+      }));
+
+      setProductos(productosConImagenes);
+    } catch (error) {
+      console.error("Error al obtener los productos:", error);
+      Alert.alert("Error", "No se pudieron cargar los productos.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchProductos();
+  }, []);
+
   return (
     <View style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.titulo}>🛍️ Tienda</Text>
       </View>
-      <FlatList
-        data={productos}
-        keyExtractor={(item) => item.id}
-        renderItem={({ item }) => (
-          <ProductoCard
-            nombre={item.nombre}
-            precio={item.precio}
-            descripcion={item.descripcion}
-            imagen={item.imagen}
-            etiqueta={item.etiqueta}
-          />
-        )}
-        numColumns={2}
-        contentContainerStyle={styles.lista}
-      />
+      {loading ? (
+        <Text style={styles.loadingText}>Cargando productos...</Text>
+      ) : (
+        <FlatList
+          data={productos}
+          keyExtractor={(item) => item.id.toString()}
+          renderItem={({ item }) => (
+            <ProductoCard
+              nombre={item.nombre}
+              precio={item.precio}
+              descripcion={item.descripcion}
+              imagen={item.imagen}
+              etiqueta={item.categoria}
+            />
+          )}
+          numColumns={2}
+          contentContainerStyle={styles.lista}
+        />
+      )}
     </View>
   );
 }
@@ -101,6 +105,12 @@ const styles = StyleSheet.create({
   titulo: {
     fontSize: 24,
     fontWeight: "bold",
+    color: "#333",
+  },
+  loadingText: {
+    textAlign: "center",
+    marginTop: 20,
+    fontSize: 16,
     color: "#333",
   },
 });

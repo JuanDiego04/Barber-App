@@ -1,5 +1,4 @@
-// screens/ServiciosScreen.js
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import ServicioCard from '../components/ServicioCard';
 import { CarritoContext } from '../context/CarritoContext';
 import { View, Text, ScrollView, StyleSheet, Platform, Alert } from 'react-native';
@@ -9,6 +8,15 @@ import { TouchableOpacity } from 'react-native-gesture-handler';
 
 
 export default function ServiciosScreen() {
+  const imagenesServicios = {
+    "Corte básico": require("../assets/corte.png"),
+    "Barba": require("../assets/barba.png"),
+    "Limpieza facial": require("../assets/facial.png"),
+  };
+
+  const [servicios, setServicios] = useState([]);
+  const [loading, setLoading] = useState(true);
+
   const { agregarAlCarrito } = useContext(CarritoContext);
   const navigation = useNavigation();
 
@@ -21,6 +29,44 @@ export default function ServiciosScreen() {
   const handleReservar = (servicio) => {
     agregarAlCarrito(servicio);
   };
+
+  const getBaseUrl = () => {
+    const localIp = "192.168.x.x"; // Reemplaza con la IP de tu máquina
+    const localhostUrl = "http://localhost/barberapp/api/servicios";
+    const localIpUrl = `http://${localIp}/barberapp/api/servicios`;
+
+    if (Platform.OS === "android") {
+      return localIpUrl; // Android no puede usar localhost
+    }
+    return localhostUrl; // iOS o navegador pueden usar localhost
+  };
+
+  const fetchServicios = async () => {
+    try {
+      const response = await fetch(`${getBaseUrl()}/obtener.php`);
+      if (!response.ok) {
+        throw new Error("Error al obtener los servicios");
+      }
+      const data = await response.json();
+
+      // Asigna las imágenes a los servicios
+      const serviciosConImagenes = data.map((servicio) => ({
+        ...servicio,
+        imagen: imagenesServicios[servicio.nombre] || require("../assets/default.png"), // Usa una imagen por defecto si no hay mapeo
+      }));
+
+      setServicios(serviciosConImagenes);
+    } catch (error) {
+      console.error("Error al obtener los servicios:", error);
+      Alert.alert("Error", "No se pudieron cargar los servicios.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchServicios();
+  }, []);
 
   // (handleAgendar) para mostrar el picker y guardar el servicio
   const handleAgendar = (servicio) => {
@@ -50,8 +96,6 @@ export default function ServiciosScreen() {
     }
 
   };
-
-  
 
   // Función para pasar de la selección de fecha a la de hora
   const pasarASelccionHora = () => {
@@ -129,35 +173,24 @@ export default function ServiciosScreen() {
         <Text style={style.headerTitle}>Nuestros Servicios</Text>
       </View>
 
-      <ScrollView >
-        <ServicioCard
-          id="servicio1"
-          titulo="Corte de Cabello"
-          precio={20000}
-          imagen={require('../assets/corte.png')}
-          descripcionDetallada="Incluye un lavado relajante con productos premium para preparar tu cabello, seguido de un corte personalizado adaptado a la forma de tu rostro y estilo deseado. Nuestros barberos están capacitados en las últimas tendencias, como el corte fade (degradado), undercut, crop texturizado, y estilos clásicos como el pompadour o el side part. Además, ofrecemos personalización completa para que el corte refleje tu personalidad, ya sea un look moderno, casual o profesional. Finalizamos con un peinado estilizado utilizando productos de alta calidad para garantizar un acabado impecable."
-          onReservar={(servicio) => agregarAlCarrito(servicio)}
-          onAgendar={(servicio) => handleAgendar(servicio)}
-        />
-        <ServicioCard
-          id="servicio2"
-          titulo="Barba"
-          precio={15000}
-          imagen={require('../assets/barba.png')}
-          descripcionDetallada="Transforma tu barba con nuestro servicio especializado que incluye un diseño y perfilado personalizado adaptado a la forma de tu rostro. Utilizamos productos premium para hidratar y suavizar el vello facial, asegurando un acabado impecable. Nuestros barberos están capacitados en las técnicas más modernas, como el perfilado con navaja para líneas definidas, degradados en la barba (beard fade) y estilos clásicos como la barba completa o el estilo Van Dyke. Además, ofrecemos personalización completa para lograr un look que refleje tu personalidad, ya sea un estilo rústico, elegante o moderno. Finalizamos con aceites y bálsamos de alta calidad para nutrir tu barba y dejarla con un aroma fresco y masculino."
-          onReservar={(servicio) => agregarAlCarrito(servicio)}
-          onAgendar={(servicio) => handleAgendar(servicio)}
-        />
-        <ServicioCard
-          id="servicio3"
-          titulo="Limpieza Facial"
-          precio={25000}
-          imagen={require('../assets/facial.png')}
-          descripcionDetallada="Ideal para eliminar impurezas, hidratar tu piel y revitalizar tu rostro. Nuestro servicio de limpieza facial incluye una exfoliación profunda para remover células muertas, extracción de puntos negros y tratamiento hidratante con productos de alta calidad. Además, aplicamos mascarillas personalizadas según tu tipo de piel (seca, grasa o mixta) para garantizar un cuidado óptimo. Finalizamos con un masaje relajante que estimula la circulación y deja tu piel fresca, suave y rejuvenecida. Perfecto para combatir los efectos del estrés, la contaminación y el envejecimiento prematuro."
-          onReservar={(servicio) => agregarAlCarrito(servicio)}
-          onAgendar={(servicio) => handleAgendar(servicio)}
-        />
-      </ScrollView>
+      {loading ? (
+        <Text style={style.loadingText}>Cargando servicios...</Text>
+      ) : (
+        <ScrollView>
+          {servicios.map((servicio) => (
+            <ServicioCard
+              key={servicio.id}
+              id={servicio.id}
+              titulo={servicio.nombre}
+              precio={servicio.precio}
+              imagen={servicio.imagen}
+              descripcionDetallada={servicio.descripcion}
+              onReservar={(servicio) => agregarAlCarrito(servicio)}
+              onAgendar={(servicio) => handleAgendar(servicio)}
+            />
+          ))}
+        </ScrollView>
+      )}
 
       {/* Renderiza el panel de selección condicionalmente */}
       {mostrarPicker && (
