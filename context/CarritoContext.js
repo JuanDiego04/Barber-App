@@ -37,7 +37,6 @@ export const CarritoProvider = ({ children }) => {
       nuevoCarrito = [...carrito];
       nuevoCarrito[index].cantidad += 1;
     } else {
-      // Si es nuevo, lo agrega con cantidad 1
       nuevoCarrito = [...carrito, { ...producto, cantidad: 1 }];
     }
 
@@ -86,7 +85,6 @@ export const CarritoProvider = ({ children }) => {
   );
 };
 
-// Hook personalizado para usar el contexto del carrito
 export const useCarrito = () => {
   return useContext(CarritoContext);
 };

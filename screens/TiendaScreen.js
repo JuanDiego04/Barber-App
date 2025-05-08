@@ -5,7 +5,7 @@ import {
   StyleSheet,
   Text,
   Alert,
-  Platform, // Asegúrate de importar Platform
+  Platform, 
 } from "react-native";
 import ProductoCard from "../components/ProductoCard";
 
