@@ -12,14 +12,15 @@ import {
 import { Ionicons } from "@expo/vector-icons";
 
 export default function ManageUsersScreen({ navigation }) {
-  // Datos simulados de usuarios
+
   const [usuarios, setUsuarios] = useState([
     {
       id: "1",
       nombre: "user02",
       email: "user02@ej.com",
+      telefono: "123456789",
     },
-
+   
   ]);
 
   const [selectedUser, setSelectedUser] = useState(null);

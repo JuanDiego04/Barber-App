@@ -7,10 +7,8 @@ try {
     $stmt = $pdo->prepare("SELECT id, nombre, email, rol, fechaRegistro FROM usuarios");
     $stmt->execute();
 
-    // Obtener todos los resultados
     $usuarios = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-    // Responder con JSON
     echo json_encode($usuarios);
 } catch (PDOException $e) {
     echo json_encode([

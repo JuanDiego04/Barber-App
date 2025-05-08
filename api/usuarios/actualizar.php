@@ -1,9 +1,8 @@
 <?php
-// Configuración de CORS
 header('Content-Type: application/json');
-header("Access-Control-Allow-Origin: *"); // Permite solicitudes desde cualquier origen
-header("Access-Control-Allow-Methods: POST, OPTIONS"); // Permite POST y OPTIONS
-header("Access-Control-Allow-Headers: Content-Type"); // Permite el encabezado Content-Type
+header("Access-Control-Allow-Origin: *"); 
+header("Access-Control-Allow-Methods: POST, OPTIONS"); 
+header("Access-Control-Allow-Headers: Content-Type"); 
 
 // Si la solicitud es una pre-solicitud (OPTIONS), responder con OK
 if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {

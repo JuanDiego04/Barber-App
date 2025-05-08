@@ -18,7 +18,7 @@ import { Ionicons } from "@expo/vector-icons";
 const BarberiaInfoScreen = () => {
   const navigation = useNavigation();
 
-  // Estado para el modal, la reseña y la calificación
+
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [review, setReview] = useState("");
   const [rating, setRating] = useState(0);
@@ -92,6 +92,7 @@ const BarberiaInfoScreen = () => {
             💇 Atención personalizada para niños y adultos
           </Text>
 
+          {/* Horarios */}
           <Text style={styles.sectionTitle}>📅 Horarios</Text>
           <Text style={styles.description}>
             Lunes a Viernes: 9:00 AM - 10:00 PM{"\n"}

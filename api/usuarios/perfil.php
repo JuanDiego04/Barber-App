@@ -5,7 +5,7 @@ require_once '../vendor/autoload.php';
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
 
-$key = 'mi_clave_secreta'; // Debes guardarlo en un lugar seguro
+$key = 'mi_clave_secreta';
 
 $headers = apache_request_headers();
 $authHeader = isset($headers['Authorization']) ? $headers['Authorization'] : null;

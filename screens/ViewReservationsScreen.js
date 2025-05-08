@@ -9,29 +9,15 @@ import {
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 
-// Datos simulados de reservas
 const reservasIniciales = [
   {
     id: "1",
-    cliente: "Juan Pérez",
-    servicio: "Corte de Cabello",
-    fecha: "2025-05-01",
+    cliente: "user02",
+    servicio: "Corte basico",
+    fecha: "2025-05-08",
     hora: "10:00 AM",
   },
-  {
-    id: "2",
-    cliente: "María López",
-    servicio: "Afeitado",
-    fecha: "2025-05-02",
-    hora: "11:30 AM",
-  },
-  {
-    id: "3",
-    cliente: "Carlos García",
-    servicio: "Limpieza Facial",
-    fecha: "2025-05-03",
-    hora: "02:00 PM",
-  },
+
 ];
 
 export default function ViewReservationsScreen({ navigation }) {

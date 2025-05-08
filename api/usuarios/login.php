@@ -3,8 +3,8 @@ require_once '../config/conexion.php';
 
 // Lista de orígenes permitidos
 $allowedOrigins = [
-    "http://localhost:8081", // Origen del frontend en localhost
-    "http://186.1.185.15" // Reemplaza con la IP local de tu máquina
+    "http://localhost:8081", 
+    "http://186.1.185.15" 
 ];
 
 // Obtener el origen de la solicitud

@@ -56,6 +56,7 @@ export default function ManageServicesScreen({ navigation }) {
         <Text style={styles.backButtonText}>Regresar</Text>
       </TouchableOpacity>
 
+      {/* Título de la pantalla */}
       <Text style={styles.title}>Gestionar Servicios</Text>
       <FlatList
         data={servicios}

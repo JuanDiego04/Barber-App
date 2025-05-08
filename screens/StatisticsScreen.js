@@ -3,36 +3,16 @@ import { View, Text, StyleSheet, FlatList } from "react-native";
 import { Ionicons } from "@expo/vector-icons"; // Asegúrate de tener instalado @expo/vector-icons
 import { TouchableOpacity } from "react-native";
 
-// Datos simulados de reservas
+
 const reservasIniciales = [
   {
     id: "1",
-    cliente: "Juan Pérez",
-    servicio: "Corte de Cabello",
-    precio: 10,
-    fecha: "2025-05-01",
-  },
-  {
-    id: "2",
-    cliente: "María López",
-    servicio: "Afeitado",
-    precio: 15,
-    fecha: "2025-05-02",
-  },
-  {
-    id: "3",
-    cliente: "Carlos García",
-    servicio: "Limpieza Facial",
+    cliente: "user02",
+    servicio: "Corte basico",
     precio: 20,
-    fecha: "2025-05-03",
+    fecha: "2025-05-08",
   },
-  {
-    id: "4",
-    cliente: "camilo Torres",
-    servicio: "Corte de Cabello",
-    precio: 10,
-    fecha: "2025-05-03",
-  },
+  
 ];
 
 export default function StatisticsScreen({ navigation }) {

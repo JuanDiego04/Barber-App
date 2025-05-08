@@ -26,7 +26,7 @@ const PagoScreen = ({ route, navigation }) => {
   const [telefono, setTelefono] = useState("");
   const [notas, setNotas] = useState("");
 
-  // Asegurarse de que el total sea un número
+
   const totalNumerico =
     typeof total === "string" ? parseFloat(total.replace(/,/g, "")) : total;
 

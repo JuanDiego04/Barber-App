@@ -9,20 +9,20 @@ import {
   StyleSheet,
   Alert,
   ImageBackground,
-  Platform, // Asegúrate de importar Platform
+  Platform, 
 } from "react-native";
 import { useAuth } from "../context/AuthContext";
 
 // Función para obtener la URL base
 const getBaseUrl = () => {
-  const localIp = "186.1.185.15"; // Reemplaza con la IP de tu máquina
+  const localIp = "186.1.185.15"; 
   const localhostUrl = "http://localhost/barberapp/api/usuarios";
   const localIpUrl = `http://${localIp}/barberapp/api/usuarios`;
 
   if (Platform.OS === "android") {
-    return localIpUrl; // Android no puede usar localhost
+    return localIpUrl;
   }
-  return localhostUrl; // iOS o navegador pueden usar localhost
+  return localhostUrl; 
 };
 
 export default function LoginScreen({ navigation }) {
@@ -49,7 +49,7 @@ export default function LoginScreen({ navigation }) {
 
       if (response.ok) {
         await AsyncStorage.setItem('user', JSON.stringify(data.usuario)); 
-        login(data.usuario); // Pasa los datos del usuario al contexto
+        login(data.usuario); 
         Alert.alert("Inicio de sesión exitoso", `Bienvenido de nuevo, ${data.usuario.nombre}!`);
       } else {
         Alert.alert("Error", data.mensaje || "Error al iniciar sesión.");

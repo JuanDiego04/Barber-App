@@ -37,7 +37,7 @@ export default function CarritoScreen({ navigation }) {
 
   return (
     <View style={styles.container}>
-      {/* Header */}
+      {/* Encabezado */}
       <View style={styles.header}>
         <Text style={styles.headerTitle}>🛒 Mi Carrito</Text>
       </View>

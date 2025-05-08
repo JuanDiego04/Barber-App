@@ -35,7 +35,7 @@ try {
     if ($carritoExistente) {
         // Ya existe, sumar cantidades y recalcular precio total
         $nuevaCantidad = $carritoExistente['cantidad'] + $cantidad;
-        $totalServicio = $nuevaCantidad * $precio;  // Precio total de este servicio
+        $totalServicio = $nuevaCantidad * $precio;  
 
         // Actualizar carrito con la nueva cantidad y precio total
         $stmt = $pdo->prepare("UPDATE carrito SET cantidad = ?, precio = ? WHERE id = ?");
@@ -44,7 +44,7 @@ try {
         echo json_encode(["mensaje" => "Cantidad de servicio actualizada en el carrito."]);
     } else {
         // No existe, insertar nuevo
-        $totalServicio = $cantidad * $precio; // Precio total del servicio
+        $totalServicio = $cantidad * $precio; 
         $stmt = $pdo->prepare("INSERT INTO carrito (usuarioId, itemId, cantidad, precio, tipo) VALUES (?, ?, ?, ?, 'servicio')");
         $stmt->execute([$usuarioId, $servicioId, $cantidad, $totalServicio]);
 

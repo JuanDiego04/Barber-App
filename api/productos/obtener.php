@@ -2,10 +2,10 @@
 require_once '../config/conexion.php';
 
 // Agregar encabezados CORS
-header("Access-Control-Allow-Origin: *"); // Permite solicitudes desde cualquier origen
-header("Access-Control-Allow-Methods: GET, POST, OPTIONS"); // Métodos permitidos
-header("Access-Control-Allow-Headers: Content-Type, Authorization"); // Encabezados permitidos
-header("Content-Type: application/json"); // Tipo de contenido
+header("Access-Control-Allow-Origin: *"); 
+header("Access-Control-Allow-Methods: GET, POST, OPTIONS"); 
+header("Access-Control-Allow-Headers: Content-Type, Authorization"); 
+header("Content-Type: application/json"); 
 
 try {
     $stmt = $pdo->query("SELECT * FROM productos");

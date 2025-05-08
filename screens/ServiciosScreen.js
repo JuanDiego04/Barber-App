@@ -31,7 +31,7 @@ export default function ServiciosScreen() {
   };
 
   const getBaseUrl = () => {
-    const localIp = "192.168.x.x"; 
+    const localIp = "186.1.185.15"; 
     const localhostUrl = "http://localhost/barberapp/api/servicios";
     const localIpUrl = `http://${localIp}/barberapp/api/servicios`;
 
